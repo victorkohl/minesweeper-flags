@@ -1,0 +1,39 @@
+{
+  "name": "minesweeper-flags",
+  "version": "0.0.0",
+  "description": "A minesweeper flags game.",
+  "homepage": "http://flags.victorkohl.me",
+  "repository": "victorkohl/minesweeper-flags",
+  "author": {
+    "name": "Victor Kohl Tavares",
+    "email": "",
+    "url": "http://victorkohl.me"
+  },
+  "files": [
+    "dist"
+  ],
+  "main": "dist/index.js",
+  "keywords": [
+    "minesweeper",
+    "flags",
+    "game"
+  ],
+  "devDependencies": {
+    "gulp": "^3.6.0",
+    "gulp-exclude-gitignore": "^1.0.0",
+    "gulp-istanbul": "^0.9.0",
+    "gulp-jscs": "^1.1.0",
+    "gulp-jshint": "^1.5.3",
+    "gulp-mocha": "^2.0.0",
+    "gulp-plumber": "^1.0.0",
+    "gulp-nsp": "^0.4.5",
+    "jshint-stylish": "^1.0.0",
+    "gulp-babel": "^5.1.0",
+    "babel-core": "^5.5.0"
+  },
+  "scripts": {
+    "prepublish": "gulp prepublish",
+    "test": "gulp"
+  },
+  "license": "MIT"
+}
