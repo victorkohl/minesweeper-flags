@@ -1,4 +1,5 @@
 'use strict';
+
 import should from 'should';
 import Position from '../lib/position';
 
