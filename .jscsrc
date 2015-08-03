@@ -17,7 +17,7 @@
   "disallowSpaceBeforePostfixUnaryOperators": ["++", "--"],
   "requireSpaceBeforeBinaryOperators": ["+", "-", "/", "*", "=", "==", "===", "!=", "!=="],
   "requireSpaceAfterBinaryOperators": ["+", "-", "/", "*", "=", "==", "===", "!=", "!=="],
-  "disallowImplicitTypeConversion": ["numeric", "binary", "string"],
+  "disallowImplicitTypeConversion": ["string"],
   "disallowKeywords": ["with", "eval"],
   "disallowMultipleLineBreaks": true,
   "disallowKeywordsOnNewLine": ["else"],

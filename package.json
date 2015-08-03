@@ -29,11 +29,15 @@
     "gulp-nsp": "~0.4.5",
     "gulp-plumber": "~1.0.0",
     "jshint-stylish": "~2.0.1",
-    "should": "^7.0.2"
+    "should": "^7.0.2",
+    "should-sinon": "0.0.3"
   },
   "scripts": {
     "prepublish": "gulp prepublish",
     "test": "gulp"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "lodash": "^3.10.0"
+  }
 }
