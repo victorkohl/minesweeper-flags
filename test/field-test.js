@@ -101,6 +101,35 @@ describe('Field', () => {
         done();
       });
 
+      it('creates the correct amount of Positions with flags', (done) => {
+        let count = 0;
+        field.positions.forEach((positionX) => {
+          positionX.forEach((position) => {
+            if (position.hasFlag) {
+              count++;
+            }
+          });
+        });
+        count.should.equal(field.numberOfFlags);
+        done();
+      });
+
+      it('populates all neighbours correctly', (done) => {
+        field.positions.forEach((positionX) => {
+          positionX.forEach((position) => {
+            ['nw','n','ne','e','se','s','sw','w'].forEach((neighbour) => {
+              let neighbourPosition = position.neighbours.get(neighbour);
+              if (neighbourPosition) {
+                neighbourPosition.should.be.an.instanceof(Position);
+              } else {
+                should(neighbourPosition).be.null();
+              }
+            });
+          });
+        });
+        done();
+      });
+
     });
 
     describe('#hitPosition', () => {
@@ -123,6 +152,94 @@ describe('Field', () => {
       it('calls Position#hit', (done) => {
         // position.hit = sinon.spy();
         // TO DO
+        done();
+      });
+
+    });
+
+    describe('#_getNeighbour', () => {
+
+      let field, position;
+      beforeEach(() => {
+        field = new Field(3);
+        field.createTable();
+        position = field.positions[1][1];
+      });
+
+      it('should throw an error for invalid neighbours', (done) => {
+        (() => field._getNeighbour('xx', position)).should.throw();
+        done();
+      });
+
+      it('should return the correct Position for "nw"', (done) => {
+        let nw = field._getNeighbour('nw', position);
+        nw.should.equal(field.positions[0][0]);
+        done();
+      });
+
+      it('should return the correct Position for "n"', (done) => {
+        let n = field._getNeighbour('n', position);
+        n.should.equal(field.positions[1][0]);
+        done();
+      });
+
+      it('should return the correct Position for "ne"', (done) => {
+        let ne = field._getNeighbour('ne', position);
+        ne.should.equal(field.positions[2][0]);
+        done();
+      });
+
+      it('should return the correct Position for "e"', (done) => {
+        let e = field._getNeighbour('e', position);
+        e.should.equal(field.positions[2][1]);
+        done();
+      });
+
+      it('should return the correct Position for "se"', (done) => {
+        let se = field._getNeighbour('se', position);
+        se.should.equal(field.positions[2][2]);
+        done();
+      });
+
+      it('should return the correct Position for "s"', (done) => {
+        let s = field._getNeighbour('s', position);
+        s.should.equal(field.positions[1][2]);
+        done();
+      });
+
+      it('should return the correct Position for "sw"', (done) => {
+        let sw = field._getNeighbour('sw', position);
+        sw.should.equal(field.positions[0][2]);
+        done();
+      });
+
+      it('should return the correct Position for "w"', (done) => {
+        let w = field._getNeighbour('w', position);
+        w.should.equal(field.positions[0][1]);
+        done();
+      });
+
+      it('should return "null" for coordinates outside the field (top)', (done) => {
+        let neighbour = field._getNeighbour('n', new Position(1,0));
+        should(neighbour).be.null();
+        done();
+      });
+
+      it('should return "null" for coordinates outside the field (bottom)', (done) => {
+        let neighbour = field._getNeighbour('s', new Position(1,2));
+        should(neighbour).be.null();
+        done();
+      });
+
+      it('should return "null" for coordinates outside the field (left)', (done) => {
+        let neighbour = field._getNeighbour('w', new Position(0,1));
+        should(neighbour).be.null();
+        done();
+      });
+
+      it('should return "null" for coordinates outside the field (right)', (done) => {
+        let neighbour = field._getNeighbour('e', new Position(2,1));
+        should(neighbour).be.null();
         done();
       });
 
