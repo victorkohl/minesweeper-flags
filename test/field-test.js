@@ -1,7 +1,7 @@
 'use strict';
 
 import should from 'should';
-import sinon from 'should-sinon';
+import sinon from 'sinon';
 import Position from '../lib/position';
 import Field from '../lib/field';
 
@@ -25,7 +25,7 @@ describe('Field', () => {
   describe('attributes', () => {
 
     let field;
-    beforeEach(() => field = new Field());
+    beforeEach(() => field = new Field(10));
 
     it('has a edge size', (done) => {
       field.should.have.property('edge');
@@ -52,7 +52,7 @@ describe('Field', () => {
   describe('instance methods', () => {
 
     let field;
-    beforeEach(() => field = new Field());
+    beforeEach(() => field = new Field(10));
 
     describe('#_generateFlags', () => {
 
@@ -136,7 +136,8 @@ describe('Field', () => {
 
       let position;
       beforeEach(() => {
-        position = new Position(1, 2);
+        field.createTable();
+        position = field.positions[1][2];
       });
 
       it('requires an X coordinate', (done) => {
@@ -149,9 +150,26 @@ describe('Field', () => {
         done();
       });
 
+      it('requires a valid X coordinate', (done) => {
+        (() => field.hitPosition(11,0)).should.throw('Invalid coordinates: x=11; y=0.');
+        done();
+      });
+
+      it('requires a valid Y coordinate', (done) => {
+        (() => field.hitPosition(0,11)).should.throw('Invalid coordinates: x=0; y=11.');
+        done();
+      });
+
       it('calls Position#hit', (done) => {
-        // position.hit = sinon.spy();
-        // TO DO
+        sinon.spy(position, 'hit');
+        field.hitPosition(1, 2);
+        position.hit.calledOnce.should.be.true();
+        done();
+      });
+
+      it('returns true if the position has a flag', (done) => {
+        sinon.stub(position, 'hit').returns(true);
+        field.hitPosition(1, 2).should.be.true();
         done();
       });
 

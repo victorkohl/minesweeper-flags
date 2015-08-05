@@ -1,6 +1,7 @@
 'use strict';
 
 import should from 'should';
+import sinon from 'sinon';
 import Position from '../lib/position';
 
 describe('Position', () => {
@@ -114,6 +115,47 @@ describe('Position', () => {
         let oldFlagsNearby = position.flagsNearby;
         position.setNeighbour('ne', new Position(0, 1, true));
         position.flagsNearby.should.equal(oldFlagsNearby + 1);
+        done();
+      });
+
+    });
+
+    describe('#hit', () => {
+
+      beforeEach(() => {
+        ['nw','n','ne','e','se','s','sw','w'].forEach((neighbour) => {
+          let newPosition = new Position(1, 2);
+          sinon.spy(newPosition, 'hit');
+          position.setNeighbour(neighbour, newPosition);
+        });
+      });
+
+      it('flags the Position as hit', (done) => {
+        position.hit();
+        position.isHit.should.be.true();
+        done();
+      });
+
+      it('returns true if the Position has a flag', (done) => {
+        position.hasFlag = true;
+        position.hit().should.be.true();
+        done();
+      });
+
+      it('propagates the hits if there are no nearby flags', (done) => {
+        position.hit();
+        position.neighbours.forEach((neighbour) => {
+          neighbour.hit.calledOnce.should.be.true();
+        });
+        done();
+      });
+
+      it('does\'t propagate the hits if the position has a flag', (done) => {
+        position.hasFlag = true;
+        position.hit();
+        position.neighbours.forEach((neighbour) => {
+          neighbour.hit.called.should.be.false();
+        });
         done();
       });
 
