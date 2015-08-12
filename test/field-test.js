@@ -1,5 +1,3 @@
-'use strict';
-
 import should from 'should';
 import sinon from 'sinon';
 import Position from '../lib/position';
@@ -117,7 +115,7 @@ describe('Field', () => {
       it('populates all neighbours correctly', (done) => {
         field.positions.forEach((positionX) => {
           positionX.forEach((position) => {
-            ['nw','n','ne','e','se','s','sw','w'].forEach((neighbour) => {
+            ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'].forEach((neighbour) => {
               let neighbourPosition = position.neighbours.get(neighbour);
               if (neighbourPosition) {
                 neighbourPosition.should.be.an.instanceof(Position);
@@ -151,12 +149,12 @@ describe('Field', () => {
       });
 
       it('requires a valid X coordinate', (done) => {
-        (() => field.hitPosition(11,0)).should.throw('Invalid coordinates: x=11; y=0.');
+        (() => field.hitPosition(11, 0)).should.throw('Invalid coordinates: x=11; y=0.');
         done();
       });
 
       it('requires a valid Y coordinate', (done) => {
-        (() => field.hitPosition(0,11)).should.throw('Invalid coordinates: x=0; y=11.');
+        (() => field.hitPosition(0, 11)).should.throw('Invalid coordinates: x=0; y=11.');
         done();
       });
 
@@ -177,7 +175,7 @@ describe('Field', () => {
 
     describe('#_getNeighbour', () => {
 
-      let field, position;
+      let field, position; // eslint-disable-line no-shadow
       beforeEach(() => {
         field = new Field(3);
         field.createTable();
@@ -238,25 +236,25 @@ describe('Field', () => {
       });
 
       it('should return "null" for coordinates outside the field (top)', (done) => {
-        let neighbour = field._getNeighbour('n', new Position(1,0));
+        let neighbour = field._getNeighbour('n', new Position(1, 0));
         should(neighbour).be.null();
         done();
       });
 
       it('should return "null" for coordinates outside the field (bottom)', (done) => {
-        let neighbour = field._getNeighbour('s', new Position(1,2));
+        let neighbour = field._getNeighbour('s', new Position(1, 2));
         should(neighbour).be.null();
         done();
       });
 
       it('should return "null" for coordinates outside the field (left)', (done) => {
-        let neighbour = field._getNeighbour('w', new Position(0,1));
+        let neighbour = field._getNeighbour('w', new Position(0, 1));
         should(neighbour).be.null();
         done();
       });
 
       it('should return "null" for coordinates outside the field (right)', (done) => {
-        let neighbour = field._getNeighbour('e', new Position(2,1));
+        let neighbour = field._getNeighbour('e', new Position(2, 1));
         should(neighbour).be.null();
         done();
       });

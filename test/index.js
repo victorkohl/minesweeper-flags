@@ -1,6 +1,5 @@
-'use strict';
 import should from 'should';
-import minesweeperFlags from '../lib';
+// import minesweeperFlags from '../lib';
 
 describe('minesweeper-flags', function () {
 
@@ -8,5 +7,5 @@ describe('minesweeper-flags', function () {
     should.exist(should);
     done();
   });
-  
+
 });

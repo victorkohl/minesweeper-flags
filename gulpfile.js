@@ -1,9 +1,7 @@
-'use strict';
 var gulp = require('gulp');
+var eslint = require('gulp-eslint');
 var excludeGitignore = require('gulp-exclude-gitignore');
 var mocha = require('gulp-mocha');
-var jshint = require('gulp-jshint');
-var jscs = require('gulp-jscs');
 var istanbul = require('gulp-istanbul');
 var nsp = require('gulp-nsp');
 var plumber = require('gulp-plumber');
@@ -13,19 +11,12 @@ var babel = require('gulp-babel');
 // when they're loaded
 require('babel-core/register');
 
-var handleErr = function (err) {
-  console.log(err.message);
-  process.exit(1);
-};
-
 gulp.task('static', function () {
   return gulp.src('**/*.js')
     .pipe(excludeGitignore())
-    .pipe(jshint('.jshintrc'))
-    .pipe(jshint.reporter('jshint-stylish'))
-    .pipe(jshint.reporter('fail'))
-    .pipe(jscs())
-    .on('error', handleErr);
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 });
 
 gulp.task('nsp', function (cb) {
@@ -33,8 +24,8 @@ gulp.task('nsp', function (cb) {
 });
 
 gulp.task('pre-test', function () {
-  return gulp.src('lib/**/*.js')    .pipe(babel())
-    
+  return gulp.src('lib/**/*.js')
+    .pipe(babel())
     .pipe(istanbul({includeUntested: true}))
     .pipe(istanbul.hookRequire());
 });

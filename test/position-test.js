@@ -1,13 +1,10 @@
-'use strict';
-
-import should from 'should';
 import sinon from 'sinon';
 import Position from '../lib/position';
 
 describe('Position', () => {
 
   describe('instantiation', () => {
-    
+
     it('requires an X coordinate', (done) => {
       (() => new Position()).should.throw('Missing parameter: x');
 
@@ -36,7 +33,7 @@ describe('Position', () => {
   describe('attributes', () => {
 
     let position;
-    beforeEach(() => {      
+    beforeEach(() => {
       position = new Position(1, 2);
     });
 
@@ -75,13 +72,13 @@ describe('Position', () => {
   describe('instance methods', () => {
 
     let position;
-    beforeEach(() => {      
+    beforeEach(() => {
       position = new Position(1, 2);
     });
 
     describe('#setNeighbour', () => {
 
-      ['nw','n','ne','e','se','s','sw','w'].forEach((neighbour) => {
+      ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'].forEach((neighbour) => {
         it(`sets the "${neighbour}" neighbour`, (done) => {
           let position2 = new Position(0, 1);
           position.setNeighbour(neighbour, position2);
@@ -123,7 +120,7 @@ describe('Position', () => {
     describe('#hit', () => {
 
       beforeEach(() => {
-        ['nw','n','ne','e','se','s','sw','w'].forEach((neighbour) => {
+        ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'].forEach((neighbour) => {
           let newPosition = new Position(1, 2);
           sinon.spy(newPosition, 'hit');
           position.setNeighbour(neighbour, newPosition);
