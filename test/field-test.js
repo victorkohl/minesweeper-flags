@@ -25,7 +25,7 @@ describe('Field', () => {
     let field;
     beforeEach(() => field = new Field(10));
 
-    it('has a edge size', (done) => {
+    it('has an edge size', (done) => {
       field.should.have.property('edge');
       done();
     });
