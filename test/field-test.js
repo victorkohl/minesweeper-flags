@@ -135,7 +135,7 @@ describe('Field', () => {
       let position;
       beforeEach(() => {
         field.createTable();
-        position = field.positions[1][2];
+        position = field.positions[2][1];
       });
 
       it('requires an X coordinate', (done) => {
@@ -161,7 +161,7 @@ describe('Field', () => {
       it('calls Position#hit', (done) => {
         sinon.spy(position, 'hit');
         field.hitPosition(1, 2);
-        position.hit.calledOnce.should.be.true();
+        position.hit.called.should.be.true();
         done();
       });
 
@@ -195,19 +195,19 @@ describe('Field', () => {
 
       it('should return the correct Position for "n"', (done) => {
         let n = field._getNeighbour('n', position);
-        n.should.equal(field.positions[1][0]);
+        n.should.equal(field.positions[0][1]);
         done();
       });
 
       it('should return the correct Position for "ne"', (done) => {
         let ne = field._getNeighbour('ne', position);
-        ne.should.equal(field.positions[2][0]);
+        ne.should.equal(field.positions[0][2]);
         done();
       });
 
       it('should return the correct Position for "e"', (done) => {
         let e = field._getNeighbour('e', position);
-        e.should.equal(field.positions[2][1]);
+        e.should.equal(field.positions[1][2]);
         done();
       });
 
@@ -219,19 +219,19 @@ describe('Field', () => {
 
       it('should return the correct Position for "s"', (done) => {
         let s = field._getNeighbour('s', position);
-        s.should.equal(field.positions[1][2]);
+        s.should.equal(field.positions[2][1]);
         done();
       });
 
       it('should return the correct Position for "sw"', (done) => {
         let sw = field._getNeighbour('sw', position);
-        sw.should.equal(field.positions[0][2]);
+        sw.should.equal(field.positions[2][0]);
         done();
       });
 
       it('should return the correct Position for "w"', (done) => {
         let w = field._getNeighbour('w', position);
-        w.should.equal(field.positions[0][1]);
+        w.should.equal(field.positions[1][0]);
         done();
       });
 
