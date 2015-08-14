@@ -1,3 +1,4 @@
+import sinon from 'sinon';
 import Game from '../lib/game';
 import Player from '../lib/player';
 
@@ -10,6 +11,11 @@ describe('Game', () => {
 
     it('has players', (done) => {
       game.should.have.property('players');
+      done();
+    });
+
+    it('has a current turn', (done) => {
+      game.should.have.property('currentTurn');
       done();
     });
 
@@ -49,26 +55,120 @@ describe('Game', () => {
 
     describe('#addPlayer', () => {
 
-      it('requires a player', (done) => {
-        (() => game.addPlayer()).should.throw('Missing parameter: player');
-        done();
-      });
-
       it('doesn\'t allow more than two players', (done) => {
         (() => {
-          let p1 = new Player('one');
-          let p2 = new Player('two');
-          let p3 = new Player('three');
-
-          game.addPlayer(p1);
-          game.addPlayer(p2);
-          game.addPlayer(p3);
+          game.addPlayer('p1');
+          game.addPlayer('p2');
+          game.addPlayer('p3');
         }).should.throw('The game is full.');
         done();
       });
 
-      it('doesn\'t allow invalid players', (done) => {
-        (() => game.addPlayer(1)).should.throw('The provided player is invalid.');
+      it('requires an string as name', (done) => {
+        (() => {
+          game.addPlayer({ name: 'p1' });
+        }).should.throw('Invalid name.');
+        done();
+      });
+
+      it('adds a new player', (done) => {
+        let oldNumPlayers = game.players.length;
+        game.addPlayer('p1');
+        game.players.length.should.be.above(oldNumPlayers);
+        done();
+      });
+
+      it('returns the new player', (done) => {
+        game.addPlayer('p1').should.be.an.instanceof(Player);
+        done();
+      });
+
+    });
+
+    describe('#hitPosition', () => {
+
+      let player1, player2;
+      beforeEach(() => {
+        game.createField();
+        player1 = game.addPlayer('p1');
+        player2 = game.addPlayer('p2');
+      });
+
+      it('requires a player', (done) => {
+        (() => {
+          game.hitPosition();
+        }).should.throw('Missing parameter: player');
+        done();
+      });
+
+      it('requires an X coordinate', (done) => {
+        (() => {
+          game.hitPosition(player1);
+        }).should.throw('Missing parameter: x');
+        done();
+      });
+
+      it('requires a Y coordinate', (done) => {
+        (() => {
+          game.hitPosition(player1, 0);
+        }).should.throw('Missing parameter: y');
+        done();
+      });
+
+      it('requires a valid player', (done) => {
+        (() => {
+          game.hitPosition('p1', 0, 0);
+        }).should.throw('The provided player is invalid.');
+        done();
+      });
+
+      it('throws when it\'s not the player\'s turn', (done) => {
+        (() => {
+          game.hitPosition(player2, 0, 0);
+        }).should.throw(`It is not ${player2.name}'s turn yet.`);
+        done();
+      });
+
+      it('calls Field#hitPosition', (done) => {
+        sinon.spy(game.field, 'hitPosition');
+        game.hitPosition(player1, 0, 0);
+        game.field.hitPosition.called.should.be.true();
+        done();
+      });
+
+      it('increments the player points when a flag is hit', (done) => {
+        game.field.hitPosition = sinon.stub().returns(true);
+        game.hitPosition(player1, 0, 0);
+        player1.points.should.equal(1);
+        done();
+      });
+
+      it('doesn\'t change turns when a flag is hit', (done) => {
+        let turn = game.currentTurn;
+        game.field.hitPosition = sinon.stub().returns(true);
+        game.hitPosition(player1, 0, 0);
+        game.currentTurn.should.equal(turn);
+        done();
+      });
+
+      it('doesn\'t increment the player points when a flag is not hit', (done) => {
+        game.field.hitPosition = sinon.stub().returns(false);
+        game.hitPosition(player1, 0, 0);
+        player1.points.should.equal(0);
+        done();
+      });
+
+      it('changes turns when a flag is hit', (done) => {
+        let turn = game.currentTurn;
+        game.field.hitPosition = sinon.stub().returns(false);
+        game.hitPosition(player1, 0, 0);
+        game.currentTurn.should.not.equal(turn);
+        done();
+      });
+
+      it('returns true when a flag is hit', (done) => {
+        game.field.hitPosition = sinon.stub().returns(true);
+        game.hitPosition(player1, 0, 0).should.be.true();
         done();
       });
 

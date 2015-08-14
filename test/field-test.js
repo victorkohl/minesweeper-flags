@@ -148,13 +148,23 @@ describe('Field', () => {
         done();
       });
 
-      it('requires a valid X coordinate', (done) => {
+      it('requires an X coordinate inside the field', (done) => {
         (() => field.hitPosition(11, 0)).should.throw('Invalid coordinates: x=11; y=0.');
         done();
       });
 
-      it('requires a valid Y coordinate', (done) => {
+      it('requires a Y coordinate inside the field', (done) => {
         (() => field.hitPosition(0, 11)).should.throw('Invalid coordinates: x=0; y=11.');
+        done();
+      });
+
+      it('requires an integer X coordinate', (done) => {
+        (() => field.hitPosition('x', 0)).should.throw('Invalid coordinates: x=x; y=0.');
+        done();
+      });
+
+      it('requires an integer Y coordinate', (done) => {
+        (() => field.hitPosition(0, 'y')).should.throw('Invalid coordinates: x=0; y=y.');
         done();
       });
 
