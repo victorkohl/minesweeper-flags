@@ -19,6 +19,11 @@ describe('Game', () => {
       done();
     });
 
+    it('has a "over" flag', (done) => {
+      game.should.have.property('over');
+      done();
+    });
+
   });
 
   describe('instance methods', () => {
@@ -48,6 +53,12 @@ describe('Game', () => {
       it('creates a new Field', (done) => {
         game.createField();
         game.should.have.property('field');
+        done();
+      });
+
+      it('calculates the amount of points to win', (done) => {
+        game.createField();
+        game.should.have.property('pointsToWin');
         done();
       });
 
@@ -129,6 +140,14 @@ describe('Game', () => {
         done();
       });
 
+      it('throws when the game is over', (done) => {
+        game.over = true;
+        (() => {
+          game.hitPosition(player1, 0, 0);
+        }).should.throw('The game is over.');
+        done();
+      });
+
       it('calls Field#hitPosition', (done) => {
         sinon.spy(game.field, 'hitPosition');
         game.hitPosition(player1, 0, 0);
@@ -169,6 +188,14 @@ describe('Game', () => {
       it('returns true when a flag is hit', (done) => {
         game.field.hitPosition = sinon.stub().returns(true);
         game.hitPosition(player1, 0, 0).should.be.true();
+        done();
+      });
+
+      it('ends the game when a player obtained over half the points', (done) => {
+        player1.points = Math.floor(game.field.numberOfFlags / 2);
+        game.field.hitPosition = sinon.stub().returns(true);
+        game.hitPosition(player1, 0, 0);
+        game.over.should.be.true();
         done();
       });
 

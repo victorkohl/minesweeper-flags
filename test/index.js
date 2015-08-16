@@ -1,10 +1,10 @@
-import should from 'should';
-// import minesweeperFlags from '../lib';
+import MinesweeperFlags from '../lib';
+import Game from '../lib/game';
 
-describe('minesweeper-flags', function () {
+describe('MinesweeperFlags', function () {
 
-  it('should have unit test!', function (done) {
-    should.exist(should);
+  it('should extend Game', function (done) {
+    new MinesweeperFlags().should.be.an.instanceof(Game);
     done();
   });
 
