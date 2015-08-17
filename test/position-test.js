@@ -133,9 +133,8 @@ describe('Position', () => {
         done();
       });
 
-      it('returns true if the Position has a flag', (done) => {
-        position.hasFlag = true;
-        position.hit().should.be.true();
+      it('returns itself', (done) => {
+        position.hit().should.equal(position);
         done();
       });
 

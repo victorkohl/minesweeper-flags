@@ -175,9 +175,9 @@ describe('Field', () => {
         done();
       });
 
-      it('returns true if the position has a flag', (done) => {
-        sinon.stub(position, 'hit').returns(true);
-        field.hitPosition(1, 2).should.be.true();
+      it('returns whatever Position#hit returns', (done) => {
+        sinon.stub(position, 'hit').returns('abc');
+        field.hitPosition(1, 2).should.be.equal('abc');
         done();
       });
 

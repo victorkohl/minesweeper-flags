@@ -1,8 +1,21 @@
 import sinon from 'sinon';
 import Game from '../lib/game';
 import Player from '../lib/player';
+import Position from '../lib/position';
 
 describe('Game', () => {
+
+  before(() => sinon.spy(Game.prototype, 'emit'));
+
+  describe('instantiation', () => {
+
+    it('emits the "new-game" event', (done) => {
+      let game = new Game();
+      game.emit.calledWith('new-game').should.be.true();
+      done();
+    });
+
+  });
 
   describe('attributes', () => {
 
@@ -155,48 +168,88 @@ describe('Game', () => {
         done();
       });
 
-      it('increments the player points when a flag is hit', (done) => {
-        game.field.hitPosition = sinon.stub().returns(true);
-        game.hitPosition(player1, 0, 0);
-        player1.points.should.equal(1);
-        done();
+      describe('when a flag is hit', () => {
+
+        beforeEach(() => {
+          let positionWithFlag = new Position(0, 0, true);
+          game.field.hitPosition = sinon.stub().returns(positionWithFlag);
+        });
+
+        it('increments the player\'s points', (done) => {
+          game.hitPosition(player1, 0, 0);
+          player1.points.should.equal(1);
+          done();
+        });
+
+        it('doesn\'t change turns', (done) => {
+          let turn = game.currentTurn;
+          game.hitPosition(player1, 0, 0);
+          game.currentTurn.should.equal(turn);
+          done();
+        });
+
+        it('returns true', (done) => {
+          game.hitPosition(player1, 0, 0).should.be.true();
+          done();
+        });
+
+        it('emits the "position-hit" event telling that a flag was discovered', (done) => {
+          player1.points = game.pointsToWin;
+          game.hitPosition(player1, 0, 0);
+          game.emit.calledWith('position-hit', true).should.be.true();
+          done();
+        });
+
+        it('ends the game when a player obtained over half the points', (done) => {
+          player1.points = game.pointsToWin;
+          game.hitPosition(player1, 0, 0);
+          game.over.should.be.true();
+          done();
+        });
+
+        it('emits the "game-over" event', (done) => {
+          player1.points = game.pointsToWin;
+          game.hitPosition(player1, 0, 0);
+          game.emit.calledWith('game-over').should.be.true();
+          done();
+        });
+
       });
 
-      it('doesn\'t change turns when a flag is hit', (done) => {
-        let turn = game.currentTurn;
-        game.field.hitPosition = sinon.stub().returns(true);
-        game.hitPosition(player1, 0, 0);
-        game.currentTurn.should.equal(turn);
-        done();
-      });
+      describe('when a flag is not hit', () => {
 
-      it('doesn\'t increment the player points when a flag is not hit', (done) => {
-        game.field.hitPosition = sinon.stub().returns(false);
-        game.hitPosition(player1, 0, 0);
-        player1.points.should.equal(0);
-        done();
-      });
+        beforeEach(() => {
+          let positionWithoutFlag = new Position(0, 0, false);
+          positionWithoutFlag.flagsNearby = 2;
+          game.field.hitPosition = sinon.stub().returns(positionWithoutFlag);
+        });
 
-      it('changes turns when a flag is hit', (done) => {
-        let turn = game.currentTurn;
-        game.field.hitPosition = sinon.stub().returns(false);
-        game.hitPosition(player1, 0, 0);
-        game.currentTurn.should.not.equal(turn);
-        done();
-      });
+        it('doesn\'t increment the player points', (done) => {
+          game.hitPosition(player1, 0, 0);
+          player1.points.should.equal(0);
+          done();
+        });
 
-      it('returns true when a flag is hit', (done) => {
-        game.field.hitPosition = sinon.stub().returns(true);
-        game.hitPosition(player1, 0, 0).should.be.true();
-        done();
-      });
+        it('changes turns', (done) => {
+          let turn = game.currentTurn;
+          game.hitPosition(player1, 0, 0);
+          game.currentTurn.should.not.equal(turn);
+          done();
+        });
 
-      it('ends the game when a player obtained over half the points', (done) => {
-        player1.points = Math.floor(game.field.numberOfFlags / 2);
-        game.field.hitPosition = sinon.stub().returns(true);
-        game.hitPosition(player1, 0, 0);
-        game.over.should.be.true();
-        done();
+        it('emits the "turn-changed" event', (done) => {
+          game.hitPosition(player1, 0, 0);
+          game.emit.calledWith('turn-changed').should.be.true();
+          done();
+        });
+
+        it('emits the "position-hit" event telling the number of nearby flags', (done) => {
+          player1.points = game.pointsToWin;
+          game.hitPosition(player1, 0, 0);
+          game.emit.calledWith('position-hit', false, 2).should.be.true();
+          done();
+        });
+
       });
 
     });
