@@ -12,7 +12,7 @@ var babel = require('gulp-babel');
 require('babel-core/register');
 
 gulp.task('static', function () {
-  return gulp.src('**/*.js')
+  return gulp.src(['**/*.js', '!dist/**'])
     .pipe(excludeGitignore())
     .pipe(eslint())
     .pipe(eslint.format())
