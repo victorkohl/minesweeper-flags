@@ -9,9 +9,9 @@ The following events are emitted by **MinesweeperFlags**:
 
 | Event        | Arguments            | Description                            |
 | ------------ | -------------------- | -------------------------------------- |
-| new-game     |                      | Emitted when a new game starts.        |
+| new-game     | edge                 | Emitted when a new game starts.        |
 | position-hit | flagHit, flagsNearby | Emitted when a player hits a position. |
-| turn-changed |                      | Emitted when the turn is changed.      |
+| turn-changed | playerName           | Emitted when the turn is changed.      |
 | game-over    |                      | Emitted when the game is over.         |
 
 ## License
