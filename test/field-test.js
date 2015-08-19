@@ -74,9 +74,9 @@ describe('Field', () => {
 
     });
 
-    describe('#createTable', () => {
+    describe('#createBoard', () => {
 
-      beforeEach(() => field.createTable());
+      beforeEach(() => field.createBoard());
 
       it('creates an array with correct edge size', (done) => {
         field.positions.length.should.equal(field.edge);
@@ -134,7 +134,7 @@ describe('Field', () => {
 
       let position;
       beforeEach(() => {
-        field.createTable();
+        field.createBoard();
         position = field.positions[2][1];
       });
 
@@ -188,7 +188,7 @@ describe('Field', () => {
       let field, position; // eslint-disable-line no-shadow
       beforeEach(() => {
         field = new Field(3);
-        field.createTable();
+        field.createBoard();
         position = field.positions[1][1];
       });
 

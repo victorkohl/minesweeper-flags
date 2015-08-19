@@ -7,16 +7,6 @@ describe('Game', () => {
 
   before(() => sinon.spy(Game.prototype, 'emit'));
 
-  describe('instantiation', () => {
-
-    it('emits the "new-game" event', (done) => {
-      let game = new Game();
-      game.emit.calledWith('new-game').should.be.true();
-      done();
-    });
-
-  });
-
   describe('attributes', () => {
 
     let game;
@@ -63,15 +53,20 @@ describe('Game', () => {
 
     describe('#createField', () => {
 
+      beforeEach(() => game.createField());
+
       it('creates a new Field', (done) => {
-        game.createField();
         game.should.have.property('field');
         done();
       });
 
       it('calculates the amount of points to win', (done) => {
-        game.createField();
         game.should.have.property('pointsToWin');
+        done();
+      });
+
+      it('emits the "new-game" event', (done) => {
+        game.emit.calledWith('new-game').should.be.true();
         done();
       });
 
