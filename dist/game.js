@@ -39,7 +39,7 @@ var Game = (function (_EventEmitter) {
 
     _get(Object.getPrototypeOf(Game.prototype), 'constructor', this).call(this);
     this.players = [];
-    this.currentTurn = 0;
+    this.currentTurn = 1;
     this.over = false;
   }
 
@@ -49,20 +49,24 @@ var Game = (function (_EventEmitter) {
    */
 
   _createClass(Game, [{
-    key: 'createField',
+    key: 'start',
 
     /**
-     * Creates the field.
+     * Creates the field and starts the game.
      * @param {number} [edge=16] - The edge size.
      * @returns {Game} this instance
      */
-    value: function createField() {
+    value: function start() {
       var edge = arguments.length <= 0 || arguments[0] === undefined ? 16 : arguments[0];
 
+      if (!this.isFull) {
+        throw new Error('The game must be full before you can start it.');
+      }
       this.field = new _field2['default'](edge);
       this.field.createBoard();
       this.pointsToWin = Math.floor(this.field.numberOfFlags / 2) + 1;
-      this.emit('new-game');
+      this.emit('new-game', edge);
+      this._changeTurn();
       return this;
     }
 
@@ -105,7 +109,7 @@ var Game = (function (_EventEmitter) {
       if (this.over) {
         throw new Error('The game is over.');
       }
-      if (this.players[this.currentTurn] !== player) {
+      if (this.currentPlayer !== player) {
         throw new Error('It is not ' + player.name + '\'s turn yet.');
       }
 
@@ -143,12 +147,22 @@ var Game = (function (_EventEmitter) {
     key: '_changeTurn',
     value: function _changeTurn() {
       this.currentTurn = +!this.currentTurn;
-      this.emit('turn-changed');
+      this.emit('turn-changed', this.currentPlayer.name);
     }
   }, {
     key: 'isFull',
     get: function get() {
       return this.players.length === 2;
+    }
+
+    /**
+     * Returns the current player.
+     * @returns {Player} The current player.
+     */
+  }, {
+    key: 'currentPlayer',
+    get: function get() {
+      return this.players[this.currentTurn];
     }
   }]);
 
