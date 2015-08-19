@@ -51,9 +51,21 @@ describe('Game', () => {
 
     });
 
-    describe('#createField', () => {
+    describe('#start', () => {
 
-      beforeEach(() => game.createField());
+      beforeEach(() => {
+        game.addPlayer('p1');
+        game.addPlayer('p2');
+        game.start();
+      });
+
+      it('requires the game to be full', (done) => {
+        game.players = [];
+        (() => {
+          game.start();
+        }).should.throw('The game must be full before you can start it.');
+        done();
+      });
 
       it('creates a new Field', (done) => {
         game.should.have.property('field');
@@ -66,7 +78,12 @@ describe('Game', () => {
       });
 
       it('emits the "new-game" event', (done) => {
-        game.emit.calledWith('new-game').should.be.true();
+        game.emit.calledWith('new-game', game.field.edge).should.be.true();
+        done();
+      });
+
+      it('emits the "turn-changed" event', (done) => {
+        game.emit.calledWith('turn-changed', game.players[0].name).should.be.true();
         done();
       });
 
@@ -108,9 +125,9 @@ describe('Game', () => {
 
       let player1, player2;
       beforeEach(() => {
-        game.createField();
         player1 = game.addPlayer('p1');
         player2 = game.addPlayer('p2');
+        game.start();
       });
 
       it('requires a player', (done) => {
@@ -234,7 +251,7 @@ describe('Game', () => {
 
         it('emits the "turn-changed" event', (done) => {
           game.hitPosition(player1, 0, 0);
-          game.emit.calledWith('turn-changed').should.be.true();
+          game.emit.calledWith('turn-changed', player1.name).should.be.true();
           done();
         });
 
