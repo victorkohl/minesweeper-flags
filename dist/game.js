@@ -41,7 +41,6 @@ var Game = (function (_EventEmitter) {
     this.players = [];
     this.currentTurn = 0;
     this.over = false;
-    this.emit('new-game');
   }
 
   /**
@@ -55,13 +54,16 @@ var Game = (function (_EventEmitter) {
     /**
      * Creates the field.
      * @param {number} [edge=16] - The edge size.
+     * @returns {Game} this instance
      */
     value: function createField() {
       var edge = arguments.length <= 0 || arguments[0] === undefined ? 16 : arguments[0];
 
       this.field = new _field2['default'](edge);
-      this.field.createTable();
+      this.field.createBoard();
       this.pointsToWin = Math.floor(this.field.numberOfFlags / 2) + 1;
+      this.emit('new-game');
+      return this;
     }
 
     /**

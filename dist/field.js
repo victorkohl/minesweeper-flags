@@ -38,16 +38,16 @@ var Field = (function () {
 
   /**
    * The total number of positions this field has.
-   * @returns {Number} The table size.
+   * @returns {Number} The board size.
    */
 
   _createClass(Field, [{
-    key: 'createTable',
+    key: 'createBoard',
 
     /**
      * Generates all positions in the field.
      */
-    value: function createTable() {
+    value: function createBoard() {
       var _this = this;
 
       var flags = this._generateFlags();
