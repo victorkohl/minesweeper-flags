@@ -14,18 +14,21 @@ var Position = (function () {
   /**
    * Represents a position.
    * @constructor
+   * @param {Game} game - The game this position is in.
    * @param {integer} x - The x coordinate.
    * @param {integer} y - The y coodinate.
    * @param {boolean} [hasFlag=false] - Indicates whether or not this position has a flag.
    */
 
   function Position() {
-    var x = arguments.length <= 0 || arguments[0] === undefined ? (0, _util.requiredParam)('x') : arguments[0];
-    var y = arguments.length <= 1 || arguments[1] === undefined ? (0, _util.requiredParam)('y') : arguments[1];
-    var hasFlag = arguments.length <= 2 || arguments[2] === undefined ? false : arguments[2];
+    var game = arguments.length <= 0 || arguments[0] === undefined ? (0, _util.requiredParam)('game') : arguments[0];
+    var x = arguments.length <= 1 || arguments[1] === undefined ? (0, _util.requiredParam)('x') : arguments[1];
+    var y = arguments.length <= 2 || arguments[2] === undefined ? (0, _util.requiredParam)('y') : arguments[2];
+    var hasFlag = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
 
     _classCallCheck(this, Position);
 
+    this.game = game;
     this.x = x;
     this.y = y;
     this.hasFlag = hasFlag;
@@ -64,9 +67,10 @@ var Position = (function () {
     key: 'hit',
     value: function hit() {
       if (this.isHit) {
-        return this.hasFlag;
+        return this;
       }
       this.isHit = true;
+      this.game.emit('position-hit', this.hasFlag, this.flagsNearby);
 
       if (!this.hasFlag && this.flagsNearby === 0) {
         this.neighbours.forEach(function (neighbour) {

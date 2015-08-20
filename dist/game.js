@@ -63,7 +63,7 @@ var Game = (function (_EventEmitter) {
         throw new Error('The game must be full before you can start it.');
       }
       this.field = new _field2['default'](edge);
-      this.field.createBoard();
+      this.field.createBoard(this);
       this.pointsToWin = Math.floor(this.field.numberOfFlags / 2) + 1;
       this.emit('new-game', edge);
       this._changeTurn();
@@ -114,7 +114,6 @@ var Game = (function (_EventEmitter) {
       }
 
       var positionHit = this.field.hitPosition(x, y);
-      this.emit('position-hit', positionHit.hasFlag, positionHit.flagsNearby);
       if (positionHit.hasFlag) {
         this._increasePlayerPoints(player);
       } else {

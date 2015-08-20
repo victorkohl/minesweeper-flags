@@ -46,8 +46,9 @@ var Field = (function () {
 
     /**
      * Generates all positions in the field.
+     * @param {Game} game - The game creating this board.
      */
-    value: function createBoard() {
+    value: function createBoard(game) {
       var _this = this;
 
       var flags = this._generateFlags();
@@ -58,7 +59,7 @@ var Field = (function () {
         for (var j = 0; j < this.edge; j++) {
           var positionNbr = i + j * this.edge;
           var hasFlag = !! ~flags.indexOf(positionNbr);
-          row[j] = new _position2['default'](j, i, hasFlag);
+          row[j] = new _position2['default'](game, j, i, hasFlag);
         }
         this.positions.push(row);
       }
