@@ -19,10 +19,16 @@ var _game2 = _interopRequireDefault(_game);
 var MinesweeperFlags = (function (_Game) {
   _inherits(MinesweeperFlags, _Game);
 
-  function MinesweeperFlags() {
+  /**
+   * Represents a Minesweeper Flags game.
+   * @constructor
+   */
+
+  function MinesweeperFlags(room) {
     _classCallCheck(this, MinesweeperFlags);
 
-    _get(Object.getPrototypeOf(MinesweeperFlags.prototype), 'constructor', this).apply(this, arguments);
+    _get(Object.getPrototypeOf(MinesweeperFlags.prototype), 'constructor', this).call(this);
+    this.room = room;
   }
 
   return MinesweeperFlags;

@@ -8,4 +8,9 @@ describe('MinesweeperFlags', function () {
     done();
   });
 
+  it('has a room', function (done) {
+    new MinesweeperFlags('a').should.have.property('room');
+    done();
+  });
+
 });
