@@ -7,12 +7,12 @@ A minesweeper flags game.
 
 The following events are emitted by **MinesweeperFlags**:
 
-| Event        | Arguments            | Description                            |
-| ------------ | -------------------- | -------------------------------------- |
-| new-game     | edge                 | Emitted when a new game starts.        |
-| position-hit | flagHit, flagsNearby | Emitted when a player hits a position. |
-| turn-changed | playerName           | Emitted when the turn is changed.      |
-| game-over    |                      | Emitted when the game is over.         |
+| Event        | Arguments                  | Description                            |
+| ------------ | -------------------------- | -------------------------------------- |
+| new-game     | edge                       | Emitted when a new game starts.        |
+| position-hit | x, y, flagHit, flagsNearby | Emitted when a position is hit.        |
+| turn-changed | playerName                 | Emitted when the turn is changed.      |
+| game-over    |                            | Emitted when the game is over.         |
 
 ## License
 

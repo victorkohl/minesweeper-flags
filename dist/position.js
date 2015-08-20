@@ -70,7 +70,7 @@ var Position = (function () {
         return this;
       }
       this.isHit = true;
-      this.game.emit('position-hit', this.hasFlag, this.flagsNearby);
+      this.game.emit('position-hit', this.x, this.y, this.hasFlag, this.flagsNearby);
 
       if (!this.hasFlag && this.flagsNearby === 0) {
         this.neighbours.forEach(function (neighbour) {

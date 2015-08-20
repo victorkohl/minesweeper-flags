@@ -155,7 +155,7 @@ describe('Position', () => {
         game.emit = sinon.spy();
         position.hasFlag = true;
         position.hit();
-        game.emit.calledWith('position-hit', true).should.be.true();
+        game.emit.calledWith('position-hit', position.x, position.y, true).should.be.true();
         done();
       });
 
@@ -181,7 +181,7 @@ describe('Position', () => {
         position.hasFlag = false;
         position.flagsNearby = 2;
         position.hit();
-        game.emit.calledWith('position-hit', false, 2).should.be.true();
+        game.emit.calledWith('position-hit', position.x, position.y, false, 2).should.be.true();
         done();
       });
 
