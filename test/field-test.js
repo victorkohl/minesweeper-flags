@@ -2,6 +2,7 @@ import should from 'should';
 import sinon from 'sinon';
 import Position from '../lib/position';
 import Field from '../lib/field';
+import Game from '../lib/game';
 
 describe('Field', () => {
 
@@ -76,7 +77,7 @@ describe('Field', () => {
 
     describe('#createBoard', () => {
 
-      beforeEach(() => field.createBoard());
+      beforeEach(() => field.createBoard(new Game()));
 
       it('creates an array with correct edge size', (done) => {
         field.positions.length.should.equal(field.edge);
@@ -134,7 +135,7 @@ describe('Field', () => {
 
       let position;
       beforeEach(() => {
-        field.createBoard();
+        field.createBoard(new Game());
         position = field.positions[2][1];
       });
 
@@ -188,7 +189,7 @@ describe('Field', () => {
       let field, position; // eslint-disable-line no-shadow
       beforeEach(() => {
         field = new Field(3);
-        field.createBoard();
+        field.createBoard(new Game());
         position = field.positions[1][1];
       });
 
@@ -246,25 +247,25 @@ describe('Field', () => {
       });
 
       it('should return "null" for coordinates outside the field (top)', (done) => {
-        let neighbour = field._getNeighbour('n', new Position(1, 0));
+        let neighbour = field._getNeighbour('n', new Position(new Game(), 1, 0));
         should(neighbour).be.null();
         done();
       });
 
       it('should return "null" for coordinates outside the field (bottom)', (done) => {
-        let neighbour = field._getNeighbour('s', new Position(1, 2));
+        let neighbour = field._getNeighbour('s', new Position(new Game(), 1, 2));
         should(neighbour).be.null();
         done();
       });
 
       it('should return "null" for coordinates outside the field (left)', (done) => {
-        let neighbour = field._getNeighbour('w', new Position(0, 1));
+        let neighbour = field._getNeighbour('w', new Position(new Game(), 0, 1));
         should(neighbour).be.null();
         done();
       });
 
       it('should return "null" for coordinates outside the field (right)', (done) => {
-        let neighbour = field._getNeighbour('e', new Position(2, 1));
+        let neighbour = field._getNeighbour('e', new Position(new Game(), 2, 1));
         should(neighbour).be.null();
         done();
       });

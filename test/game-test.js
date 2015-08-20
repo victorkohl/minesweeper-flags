@@ -183,7 +183,7 @@ describe('Game', () => {
       describe('when a flag is hit', () => {
 
         beforeEach(() => {
-          let positionWithFlag = new Position(0, 0, true);
+          let positionWithFlag = new Position(game, 0, 0, true);
           game.field.hitPosition = sinon.stub().returns(positionWithFlag);
         });
 
@@ -202,13 +202,6 @@ describe('Game', () => {
 
         it('returns true', (done) => {
           game.hitPosition(player1, 0, 0).should.be.true();
-          done();
-        });
-
-        it('emits the "position-hit" event telling that a flag was discovered', (done) => {
-          player1.points = game.pointsToWin;
-          game.hitPosition(player1, 0, 0);
-          game.emit.calledWith('position-hit', true).should.be.true();
           done();
         });
 
@@ -231,7 +224,7 @@ describe('Game', () => {
       describe('when a flag is not hit', () => {
 
         beforeEach(() => {
-          let positionWithoutFlag = new Position(0, 0, false);
+          let positionWithoutFlag = new Position(game, 0, 0, false);
           positionWithoutFlag.flagsNearby = 2;
           game.field.hitPosition = sinon.stub().returns(positionWithoutFlag);
         });
@@ -252,13 +245,6 @@ describe('Game', () => {
         it('emits the "turn-changed" event', (done) => {
           game.hitPosition(player1, 0, 0);
           game.emit.calledWith('turn-changed', player1.name).should.be.true();
-          done();
-        });
-
-        it('emits the "position-hit" event telling the number of nearby flags', (done) => {
-          player1.points = game.pointsToWin;
-          game.hitPosition(player1, 0, 0);
-          game.emit.calledWith('position-hit', false, 2).should.be.true();
           done();
         });
 
