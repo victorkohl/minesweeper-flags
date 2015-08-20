@@ -110,7 +110,7 @@ var Game = (function (_EventEmitter) {
         throw new Error('The game is over.');
       }
       if (this.currentPlayer !== player) {
-        throw new Error('It is not ' + player.name + '\'s turn yet.');
+        throw new Error('It is not your turn yet.');
       }
 
       var positionHit = this.field.hitPosition(x, y);

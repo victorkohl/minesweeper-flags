@@ -161,7 +161,7 @@ describe('Game', () => {
       it('throws when it\'s not the player\'s turn', (done) => {
         (() => {
           game.hitPosition(player2, 0, 0);
-        }).should.throw(`It is not ${player2.name}'s turn yet.`);
+        }).should.throw(`It is not your turn yet.`);
         done();
       });
 
