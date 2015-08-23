@@ -6,7 +6,7 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x5, _x6, _x7) { var _again = true; _function: while (_again) { var object = _x5, property = _x6, receiver = _x7; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x5 = parent; _x6 = property; _x7 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x6, _x7, _x8) { var _again = true; _function: while (_again) { var object = _x6, property = _x7, receiver = _x8; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x6 = parent; _x7 = property; _x8 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
@@ -17,10 +17,6 @@ function _inherits(subClass, superClass) { if (typeof superClass !== 'function' 
 var _events = require('events');
 
 var _util = require('./util');
-
-var _player = require('./player');
-
-var _player2 = _interopRequireDefault(_player);
 
 var _field = require('./field');
 
@@ -72,26 +68,32 @@ var Game = (function (_EventEmitter) {
 
     /**
      * Adds a player.
-     * @param {string} name - The player name.
-     * @returns {Player} The new player.
+     * A player can be any javascript object with an id attribute.
+     * @param {object} player - The player object.
+     * @returns {object} The new player.
      */
   }, {
     key: 'addPlayer',
-    value: function addPlayer(name) {
+    value: function addPlayer() {
+      var player = arguments.length <= 0 || arguments[0] === undefined ? (0, _util.requiredParam)('player') : arguments[0];
+
       if (this.isFull) {
         throw new Error('The game is full.');
       }
-      if (name && typeof name !== 'string') {
-        throw new Error('Invalid name.');
+      if (!player || typeof player !== 'object') {
+        throw new Error('Invalid player.');
       }
-      var newPlayer = new _player2['default'](name);
-      this.players.push(newPlayer);
-      return newPlayer;
+      if (!player.id) {
+        throw new Error('The provided player must have an "id" attribute');
+      }
+      player.__points = 0;
+      this.players.push(player);
+      return player;
     }
 
     /**
      * Hits a position on the field.
-     * @param {Player} player - The player that hit the position.
+     * @param {object} player - The player that hit the position.
      * @param {integer} x - The X coordinate.
      * @param {integer} y - The Y coordinate.
      * @returns {boolean} Whether the move hit a flag or not.
@@ -103,8 +105,8 @@ var Game = (function (_EventEmitter) {
       var x = arguments.length <= 1 || arguments[1] === undefined ? (0, _util.requiredParam)('x') : arguments[1];
       var y = arguments.length <= 2 || arguments[2] === undefined ? (0, _util.requiredParam)('y') : arguments[2];
 
-      if (!(player instanceof _player2['default'])) {
-        throw new Error('The provided player is invalid.');
+      if (! ~this.players.indexOf(player)) {
+        throw new Error('The provided player is not in the game.');
       }
       if (this.over) {
         throw new Error('The game is over.');
@@ -126,13 +128,13 @@ var Game = (function (_EventEmitter) {
     /**
      * Increases a player's total points.
      * @private
-     * @param {Player} player - The player that will receive points.
+     * @param {object} player - The player that will receive points.
      */
   }, {
     key: '_increasePlayerPoints',
     value: function _increasePlayerPoints(player) {
-      player.points++;
-      if (player.points >= this.pointsToWin) {
+      player.__points++;
+      if (player.__points >= this.pointsToWin) {
         this.over = true;
         this.emit('game-over');
       }
@@ -146,7 +148,7 @@ var Game = (function (_EventEmitter) {
     key: '_changeTurn',
     value: function _changeTurn() {
       this.currentTurn = +!this.currentTurn;
-      this.emit('turn-changed', this.currentPlayer.name);
+      this.emit('turn-changed', this.currentPlayer.id);
     }
   }, {
     key: 'isFull',
@@ -156,7 +158,7 @@ var Game = (function (_EventEmitter) {
 
     /**
      * Returns the current player.
-     * @returns {Player} The current player.
+     * @returns {object} The current player.
      */
   }, {
     key: 'currentPlayer',
