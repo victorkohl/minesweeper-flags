@@ -1,6 +1,5 @@
 import sinon from 'sinon';
 import Game from '../lib/game';
-import Player from '../lib/player';
 import Position from '../lib/position';
 
 describe('Game', () => {
@@ -54,8 +53,8 @@ describe('Game', () => {
     describe('#start', () => {
 
       beforeEach(() => {
-        game.addPlayer('p1');
-        game.addPlayer('p2');
+        game.addPlayer({ id: 'p1' });
+        game.addPlayer({ id: 'p2' });
         game.start();
       });
 
@@ -83,7 +82,7 @@ describe('Game', () => {
       });
 
       it('emits the "turn-changed" event', (done) => {
-        game.emit.calledWith('turn-changed', game.players[0].name).should.be.true();
+        game.emit.calledWith('turn-changed', game.players[0].id).should.be.true();
         done();
       });
 
@@ -91,31 +90,53 @@ describe('Game', () => {
 
     describe('#addPlayer', () => {
 
+      it('requires a player', (done) => {
+        (() => {
+          game.addPlayer();
+        }).should.throw('Missing parameter: player');
+        done();
+      });
+
       it('doesn\'t allow more than two players', (done) => {
         (() => {
-          game.addPlayer('p1');
-          game.addPlayer('p2');
-          game.addPlayer('p3');
+          game.addPlayer({ id: 'p1' });
+          game.addPlayer({ id: 'p2' });
+          game.addPlayer({ id: 'p3' });
         }).should.throw('The game is full.');
         done();
       });
 
-      it('requires an string as name', (done) => {
+      it('requires an object', (done) => {
+        (() => {
+          game.addPlayer('p1');
+        }).should.throw('Invalid player.');
+        done();
+      });
+
+      it('requires an object with an "id" attribute', (done) => {
         (() => {
           game.addPlayer({ name: 'p1' });
-        }).should.throw('Invalid name.');
+        }).should.throw('The provided player must have an "id" attribute');
+        done();
+      });
+
+      it('creates a "__points" attribute', (done) => {
+        let newPlayer = { id: 'p1' };
+        game.addPlayer(newPlayer);
+        newPlayer.should.have.property('__points');
         done();
       });
 
       it('adds a new player', (done) => {
         let oldNumPlayers = game.players.length;
-        game.addPlayer('p1');
+        game.addPlayer({ id: 'p1' });
         game.players.length.should.be.above(oldNumPlayers);
         done();
       });
 
       it('returns the new player', (done) => {
-        game.addPlayer('p1').should.be.an.instanceof(Player);
+        let newPlayer = { id: 'p1' };
+        game.addPlayer(newPlayer).should.equal(newPlayer);
         done();
       });
 
@@ -125,8 +146,8 @@ describe('Game', () => {
 
       let player1, player2;
       beforeEach(() => {
-        player1 = game.addPlayer('p1');
-        player2 = game.addPlayer('p2');
+        player1 = game.addPlayer({ id: 'p1' });
+        player2 = game.addPlayer({ id: 'p2' });
         game.start();
       });
 
@@ -154,7 +175,7 @@ describe('Game', () => {
       it('requires a valid player', (done) => {
         (() => {
           game.hitPosition('p1', 0, 0);
-        }).should.throw('The provided player is invalid.');
+        }).should.throw('The provided player is not in the game.');
         done();
       });
 
@@ -189,7 +210,7 @@ describe('Game', () => {
 
         it('increments the player\'s points', (done) => {
           game.hitPosition(player1, 0, 0);
-          player1.points.should.equal(1);
+          player1.__points.should.equal(1);
           done();
         });
 
@@ -206,14 +227,14 @@ describe('Game', () => {
         });
 
         it('ends the game when a player obtained over half the points', (done) => {
-          player1.points = game.pointsToWin;
+          player1.__points = game.pointsToWin;
           game.hitPosition(player1, 0, 0);
           game.over.should.be.true();
           done();
         });
 
         it('emits the "game-over" event', (done) => {
-          player1.points = game.pointsToWin;
+          player1.__points = game.pointsToWin;
           game.hitPosition(player1, 0, 0);
           game.emit.calledWith('game-over').should.be.true();
           done();
@@ -231,7 +252,7 @@ describe('Game', () => {
 
         it('doesn\'t increment the player points', (done) => {
           game.hitPosition(player1, 0, 0);
-          player1.points.should.equal(0);
+          player1.__points.should.equal(0);
           done();
         });
 
@@ -244,7 +265,7 @@ describe('Game', () => {
 
         it('emits the "turn-changed" event', (done) => {
           game.hitPosition(player1, 0, 0);
-          game.emit.calledWith('turn-changed', player1.name).should.be.true();
+          game.emit.calledWith('turn-changed', player1.id).should.be.true();
           done();
         });
 
