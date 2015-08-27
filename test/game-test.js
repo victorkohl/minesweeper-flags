@@ -1,4 +1,7 @@
+import Promise from 'bluebird';
+import should from 'should';
 import sinon from 'sinon';
+import promised from 'should-promised'; // eslint-disable-line no-unused-vars
 import Game from '../lib/game';
 import Position from '../lib/position';
 
@@ -53,17 +56,24 @@ describe('Game', () => {
     describe('#start', () => {
 
       beforeEach(() => {
-        game.addPlayer({ id: 'p1' });
-        game.addPlayer({ id: 'p2' });
-        game.start();
+        return game.addPlayer({ id: 'p1' })
+          .then(() => game.addPlayer({ id: 'p2' }))
+          .then(() => game.start());
+      });
+
+      it('returns a Promise', (done) => {
+        game.start().should.be.a.Promise(); // eslint-disable-line new-cap
+        done();
       });
 
       it('requires the game to be full', (done) => {
         game.players = [];
-        (() => {
-          game.start();
-        }).should.throw('The game must be full before you can start it.');
-        done();
+        game.start()
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal('The game must be full before you can start it.');
+            done();
+          });
       });
 
       it('creates a new Field', (done) => {
@@ -90,53 +100,72 @@ describe('Game', () => {
 
     describe('#addPlayer', () => {
 
-      it('requires a player', (done) => {
-        (() => {
-          game.addPlayer();
-        }).should.throw('Missing parameter: player');
+      it('returns a Promise', (done) => {
+        game.addPlayer({ id: 'p1' }).should.be.a.Promise(); // eslint-disable-line new-cap
         done();
+      });
+
+      it('requires a player', (done) => {
+        game.addPlayer()
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal('Missing parameter: player');
+            done();
+          });
       });
 
       it('doesn\'t allow more than two players', (done) => {
-        (() => {
-          game.addPlayer({ id: 'p1' });
-          game.addPlayer({ id: 'p2' });
-          game.addPlayer({ id: 'p3' });
-        }).should.throw('The game is full.');
-        done();
+        game.addPlayer({ id: 'p1' })
+          .then(() => game.addPlayer({ id: 'p2' }))
+          .then(() => game.addPlayer({ id: 'p3' }))
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal('The game is full.');
+            done();
+          });
       });
 
       it('requires an object', (done) => {
-        (() => {
-          game.addPlayer('p1');
-        }).should.throw('Invalid player.');
-        done();
+        game.addPlayer('p1')
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal('Invalid player.');
+            done();
+          });
       });
 
       it('requires an object with an "id" attribute', (done) => {
-        (() => {
-          game.addPlayer({ name: 'p1' });
-        }).should.throw('The provided player must have an "id" attribute');
-        done();
+        game.addPlayer({ name: 'p1' })
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal('The provided player must have an "id" attribute');
+            done();
+          });
       });
 
       it('creates a "__points" attribute', (done) => {
         let newPlayer = { id: 'p1' };
-        game.addPlayer(newPlayer);
-        newPlayer.should.have.property('__points');
-        done();
+        game.addPlayer(newPlayer)
+          .then(() => {
+            newPlayer.should.have.property('__points');
+            done();
+          })
+          .catch(done);
       });
 
       it('adds a new player', (done) => {
         let oldNumPlayers = game.players.length;
-        game.addPlayer({ id: 'p1' });
-        game.players.length.should.be.above(oldNumPlayers);
-        done();
+        game.addPlayer({ id: 'p1' })
+          .then(() => {
+            game.players.length.should.be.above(oldNumPlayers);
+            done();
+          })
+          .catch(done);
       });
 
       it('returns the new player', (done) => {
         let newPlayer = { id: 'p1' };
-        game.addPlayer(newPlayer).should.equal(newPlayer);
+        game.addPlayer(newPlayer).should.be.fulfilledWith(newPlayer);
         done();
       });
 
@@ -146,98 +175,132 @@ describe('Game', () => {
 
       let player1, player2;
       beforeEach(() => {
-        player1 = game.addPlayer({ id: 'p1' });
-        player2 = game.addPlayer({ id: 'p2' });
-        game.start();
+        return game.addPlayer({ id: 'p1' })
+          .then((player) => player1 = player)
+          .then(() => game.addPlayer({ id: 'p2' }))
+          .then((player) => player2 = player)
+          .then(() => game.start());
+      });
+
+      it('returns a Promise', (done) => {
+        game.hitPosition(player1, 0, 0).should.be.a.Promise(); // eslint-disable-line new-cap
+        done();
       });
 
       it('requires a player', (done) => {
-        (() => {
-          game.hitPosition();
-        }).should.throw('Missing parameter: player');
-        done();
+        game.hitPosition()
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal('Missing parameter: player');
+            done();
+          });
       });
 
       it('requires an X coordinate', (done) => {
-        (() => {
-          game.hitPosition(player1);
-        }).should.throw('Missing parameter: x');
-        done();
+        game.hitPosition(player1)
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal('Missing parameter: x');
+            done();
+          });
       });
 
       it('requires a Y coordinate', (done) => {
-        (() => {
-          game.hitPosition(player1, 0);
-        }).should.throw('Missing parameter: y');
-        done();
+        game.hitPosition(player1, 0)
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal('Missing parameter: y');
+            done();
+          });
       });
 
       it('requires a valid player', (done) => {
-        (() => {
-          game.hitPosition('p1', 0, 0);
-        }).should.throw('The provided player is not in the game.');
-        done();
+        game.hitPosition('p1', 0, 0)
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal('The provided player is not in the game.');
+            done();
+          });
       });
 
       it('throws when it\'s not the player\'s turn', (done) => {
-        (() => {
-          game.hitPosition(player2, 0, 0);
-        }).should.throw(`It is not your turn yet.`);
-        done();
+        game.hitPosition(player2, 0, 0)
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal(`It is not your turn yet.`);
+            done();
+          });
       });
 
       it('throws when the game is over', (done) => {
         game.over = true;
-        (() => {
-          game.hitPosition(player1, 0, 0);
-        }).should.throw('The game is over.');
-        done();
+        game.hitPosition(player1, 0, 0)
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal('The game is over.');
+            done();
+          });
       });
 
       it('calls Field#hitPosition', (done) => {
         sinon.spy(game.field, 'hitPosition');
-        game.hitPosition(player1, 0, 0);
-        game.field.hitPosition.called.should.be.true();
-        done();
+        game.hitPosition(player1, 0, 0)
+          .then(() => {
+            game.field.hitPosition.called.should.be.true();
+            done();
+          })
+          .catch(done);
       });
 
       describe('when a flag is hit', () => {
 
         beforeEach(() => {
           let positionWithFlag = new Position(game, 0, 0, true);
-          game.field.hitPosition = sinon.stub().returns(positionWithFlag);
+          game.field.hitPosition = sinon.stub().returns(Promise.resolve(positionWithFlag));
         });
 
         it('increments the player\'s points', (done) => {
-          game.hitPosition(player1, 0, 0);
-          player1.__points.should.equal(1);
-          done();
+          game.hitPosition(player1, 0, 0)
+            .then(() => {
+              player1.__points.should.equal(1);
+              done();
+            })
+            .catch(done);
         });
 
         it('doesn\'t change turns', (done) => {
           let turn = game.currentTurn;
-          game.hitPosition(player1, 0, 0);
-          game.currentTurn.should.equal(turn);
-          done();
+          game.hitPosition(player1, 0, 0)
+            .then(() => {
+              game.currentTurn.should.equal(turn);
+              done();
+            })
+            .catch(done);
         });
 
         it('returns true', (done) => {
-          game.hitPosition(player1, 0, 0).should.be.true();
+          game.hitPosition(player1, 0, 0).should.be.fulfilledWith(true);
           done();
         });
 
         it('ends the game when a player obtained over half the points', (done) => {
           player1.__points = game.pointsToWin;
-          game.hitPosition(player1, 0, 0);
-          game.over.should.be.true();
-          done();
+          game.hitPosition(player1, 0, 0)
+            .then(() => {
+              game.over.should.be.true();
+              done();
+            })
+            .catch(done);
         });
 
         it('emits the "game-over" event', (done) => {
           player1.__points = game.pointsToWin;
-          game.hitPosition(player1, 0, 0);
-          game.emit.calledWith('game-over').should.be.true();
-          done();
+          game.hitPosition(player1, 0, 0)
+            .then(() => {
+              game.emit.calledWith('game-over').should.be.true();
+              done();
+            })
+            .catch(done);
         });
 
       });
@@ -247,26 +310,35 @@ describe('Game', () => {
         beforeEach(() => {
           let positionWithoutFlag = new Position(game, 0, 0, false);
           positionWithoutFlag.flagsNearby = 2;
-          game.field.hitPosition = sinon.stub().returns(positionWithoutFlag);
+          game.field.hitPosition = sinon.stub().returns(Promise.resolve(positionWithoutFlag));
         });
 
         it('doesn\'t increment the player points', (done) => {
-          game.hitPosition(player1, 0, 0);
-          player1.__points.should.equal(0);
-          done();
+          game.hitPosition(player1, 0, 0)
+            .then(() => {
+              player1.__points.should.equal(0);
+              done();
+            })
+            .catch(done);
         });
 
         it('changes turns', (done) => {
           let turn = game.currentTurn;
-          game.hitPosition(player1, 0, 0);
-          game.currentTurn.should.not.equal(turn);
-          done();
+          game.hitPosition(player1, 0, 0)
+            .then(() => {
+              game.currentTurn.should.not.equal(turn);
+              done();
+            })
+            .catch(done);
         });
 
         it('emits the "turn-changed" event', (done) => {
-          game.hitPosition(player1, 0, 0);
-          game.emit.calledWith('turn-changed', player1.id).should.be.true();
-          done();
+          game.hitPosition(player1, 0, 0)
+            .then(() => {
+              game.emit.calledWith('turn-changed', player1.id).should.be.true();
+              done();
+            })
+            .catch(done);
         });
 
       });

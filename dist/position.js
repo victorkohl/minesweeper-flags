@@ -6,9 +6,21 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+var _bluebird = require('bluebird');
+
+var _bluebird2 = _interopRequireDefault(_bluebird);
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
+
 var _util = require('./util');
+
+var NEIGHBOURHOOD = [['nw'], ['n'], ['ne'], ['e'], ['se'], ['s'], ['sw'], ['w']];
 
 var Position = (function () {
   /**
@@ -34,96 +46,124 @@ var Position = (function () {
     this.hasFlag = hasFlag;
     this.isHit = false;
     this.flagsNearby = 0;
-    this.neighbours = new Map([['nw'], ['n'], ['ne'], ['e'], ['se'], ['s'], ['sw'], ['w']]);
+    this.neighbours = new Map(NEIGHBOURHOOD);
   }
 
   /**
    * Sets a neighbour.
    * @param {string} neighbour - The neighbour position.
    * @param {Position} position - The position.
+   * @returns {Promise} A bluebird promise object
    */
 
   _createClass(Position, [{
     key: 'setNeighbour',
-    value: function setNeighbour() {
-      var neighbour = arguments.length <= 0 || arguments[0] === undefined ? (0, _util.requiredParam)('neighbour') : arguments[0];
-      var position = arguments.length <= 1 || arguments[1] === undefined ? (0, _util.requiredParam)('position') : arguments[1];
+    value: function setNeighbour(neighbour, position) {
+      var _this = this;
 
-      if (!this.neighbours.has(neighbour)) {
-        throw new Error('The provided neighbour \'' + neighbour + '\' is invalid.');
-      }
-      if (!(position instanceof Position) && position !== null) {
-        throw new Error('The provided position is invalid.');
-      }
-      this.neighbours.set(neighbour, position);
-      this._setFlagsNearby();
+      return new _bluebird2['default'](function (resolve, reject) {
+        if (_lodash2['default'].isUndefined(neighbour)) {
+          (0, _util.requiredParam)('neighbour');
+        }
+        if (_lodash2['default'].isUndefined(position)) {
+          (0, _util.requiredParam)('position');
+        }
+        if (!_this.neighbours.has(neighbour)) {
+          reject(new Error('The provided neighbour \'' + neighbour + '\' is invalid.'));
+        }
+        if (!(position instanceof Position) && position !== null) {
+          reject(new Error('The provided position is invalid.'));
+        }
+        _this.neighbours.set(neighbour, position);
+        _this._setFlagsNearby().then(resolve);
+      });
     }
 
     /**
      * Hits this position.
      * @returns {Position} This position.
+     * @returns {Promise} A bluebird promise object
      */
   }, {
     key: 'hit',
     value: function hit() {
-      if (this.isHit) {
-        return this;
-      }
-      this.isHit = true;
-      this.game.emit('position-hit', this.x, this.y, this.hasFlag, this.flagsNearby);
+      var _this2 = this;
 
-      if (!this.hasFlag && this.flagsNearby === 0) {
-        this.neighbours.forEach(function (neighbour) {
-          if (neighbour) {
-            neighbour.hit();
-          }
-        });
-      }
+      return new _bluebird2['default'](function (resolve, reject) {
+        if (_this2.isHit) {
+          return resolve(_this2);
+        }
+        _this2.isHit = true;
+        _this2.game.emit('position-hit', _this2.x, _this2.y, _this2.hasFlag, _this2.flagsNearby);
 
-      return this;
+        // hit all neighbours when this position doesn't
+        // have a flag nor flags nearby
+        var neighboursHit = [];
+        if (!_this2.hasFlag && _this2.flagsNearby === 0) {
+          _this2.neighbours.forEach(function (neighbour) {
+            if (neighbour) {
+              neighboursHit.push(neighbour.hit());
+            }
+          });
+        }
+
+        _bluebird2['default'].all(neighboursHit).then(function () {
+          return resolve(_this2);
+        })['catch'](reject);
+      });
     }
 
     /**
      * Recalculates the flagsNearby counter.
      * @private
+     * @returns {Promise} A bluebird promise object
      */
   }, {
     key: '_setFlagsNearby',
     value: function _setFlagsNearby() {
-      var count = 0;
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+      var _this3 = this;
 
-      try {
-        for (var _iterator = this.neighbours.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var neighbour = _step.value;
+      return new _bluebird2['default'](function (resolve) {
+        var count = 0;
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
 
-          if (neighbour && neighbour.hasFlag) {
-            count += 1;
-          }
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
         try {
-          if (!_iteratorNormalCompletion && _iterator['return']) {
-            _iterator['return']();
+          for (var _iterator = _this3.neighbours.values()[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var neighbour = _step.value;
+
+            if (neighbour && neighbour.hasFlag) {
+              count += 1;
+            }
           }
+        } catch (err) {
+          _didIteratorError = true;
+          _iteratorError = err;
         } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
+          try {
+            if (!_iteratorNormalCompletion && _iterator['return']) {
+              _iterator['return']();
+            }
+          } finally {
+            if (_didIteratorError) {
+              throw _iteratorError;
+            }
           }
         }
-      }
 
-      this.flagsNearby = count;
+        _this3.flagsNearby = count;
+        resolve();
+      });
     }
   }]);
 
   return Position;
 })();
+
+Position.neighbourhood = NEIGHBOURHOOD.map(function (n) {
+  return n[0];
+});
 
 exports['default'] = Position;
 module.exports = exports['default'];

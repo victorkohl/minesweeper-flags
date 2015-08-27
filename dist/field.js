@@ -10,6 +10,10 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'd
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
+var _bluebird = require('bluebird');
+
+var _bluebird2 = _interopRequireDefault(_bluebird);
+
 var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
@@ -47,30 +51,35 @@ var Field = (function () {
     /**
      * Generates all positions in the field.
      * @param {Game} game - The game creating this board.
+     * @returns {Promise} A bluebird promise object
      */
     value: function createBoard(game) {
       var _this = this;
 
-      var flags = this._generateFlags();
+      return new _bluebird2['default'](function (resolve) {
+        var flags = _this._generateFlags();
+        var allPositions = [];
 
-      // creates all the Positions
-      for (var i = 0; i < this.edge; i++) {
-        var row = Array.apply(null, new Array(this.edge));
-        for (var j = 0; j < this.edge; j++) {
-          var positionNbr = i + j * this.edge;
-          var hasFlag = !! ~flags.indexOf(positionNbr);
-          row[j] = new _position2['default'](game, j, i, hasFlag);
+        // creates all the Positions
+        for (var y = 0; y < _this.edge; y++) {
+          var row = [];
+          for (var x = 0; x < _this.edge; x++) {
+            var hasFlag = !! ~flags.indexOf(y + x * _this.edge);
+            row[x] = new _position2['default'](game, x, y, hasFlag);
+            allPositions.push(row[x]);
+          }
+          _this.positions.push(row);
         }
-        this.positions.push(row);
-      }
 
-      // sets the neighbours for all Positions
-      this.positions.forEach(function (row) {
-        row.forEach(function (position) {
-          ['nw', 'n', 'ne', 'e', 'se', 's', 'sw', 'w'].forEach(function (neighbour) {
+        // sets the neighbours for all Positions
+        var neighbourhood = _position2['default'].neighbourhood;
+        allPositions.forEach(function (position) {
+          neighbourhood.forEach(function (neighbour) {
             position.setNeighbour(neighbour, _this._getNeighbour(neighbour, position));
           });
         });
+
+        resolve();
       });
     }
 
@@ -78,23 +87,31 @@ var Field = (function () {
      * Hits a position in the field.
      * @param {integer} x - The x coordinate.
      * @param {integer} y - The y coodinate.
-     * @returns {Position} The position hit.
+     * @returns {Promise} A bluebird promise object with the position
      */
   }, {
     key: 'hitPosition',
-    value: function hitPosition() {
-      var x = arguments.length <= 0 || arguments[0] === undefined ? (0, _util.requiredParam)('x') : arguments[0];
-      var y = arguments.length <= 1 || arguments[1] === undefined ? (0, _util.requiredParam)('y') : arguments[1];
+    value: function hitPosition(x, y) {
+      var _this2 = this;
 
-      if (this._invalidCoordinates(x, y)) {
-        throw new Error('Invalid coordinates: x=' + x + '; y=' + y + '.');
-      }
-      return this.positions[y][x].hit();
+      return new _bluebird2['default'](function (resolve, reject) {
+        if (_lodash2['default'].isUndefined(x)) {
+          (0, _util.requiredParam)('x');
+        }
+        if (_lodash2['default'].isUndefined(y)) {
+          (0, _util.requiredParam)('y');
+        }
+        if (_this2._invalidCoordinates(x, y)) {
+          reject(new Error('Invalid coordinates: x=' + x + '; y=' + y + '.'));
+        }
+        _this2.positions[y][x].hit().then(resolve)['catch'](reject);
+      });
     }
 
     /**
      * Generates a list of positions where the flags will be.
      * @private
+     * @returns {array} An array with the position numbers.
      */
   }, {
     key: '_generateFlags',

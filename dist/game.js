@@ -6,13 +6,21 @@ Object.defineProperty(exports, '__esModule', {
 
 var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
 
-var _get = function get(_x6, _x7, _x8) { var _again = true; _function: while (_again) { var object = _x6, property = _x7, receiver = _x8; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x6 = parent; _x7 = property; _x8 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
+var _get = function get(_x2, _x3, _x4) { var _again = true; _function: while (_again) { var object = _x2, property = _x3, receiver = _x4; desc = parent = getter = undefined; _again = false; if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { _x2 = parent; _x3 = property; _x4 = receiver; _again = true; continue _function; } } else if ('value' in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } } };
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== 'function' && superClass !== null) { throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var _bluebird = require('bluebird');
+
+var _bluebird2 = _interopRequireDefault(_bluebird);
+
+var _lodash = require('lodash');
+
+var _lodash2 = _interopRequireDefault(_lodash);
 
 var _events = require('events');
 
@@ -53,17 +61,22 @@ var Game = (function (_EventEmitter) {
      * @returns {Game} this instance
      */
     value: function start() {
+      var _this = this;
+
       var edge = arguments.length <= 0 || arguments[0] === undefined ? 16 : arguments[0];
 
-      if (!this.isFull) {
-        throw new Error('The game must be full before you can start it.');
-      }
-      this.field = new _field2['default'](edge);
-      this.field.createBoard(this);
-      this.pointsToWin = Math.floor(this.field.numberOfFlags / 2) + 1;
-      this.emit('new-game', edge);
-      this._changeTurn();
-      return this;
+      return new _bluebird2['default'](function (resolve, reject) {
+        if (!_this.isFull) {
+          reject(new Error('The game must be full before you can start it.'));
+        }
+        _this.field = new _field2['default'](edge);
+        _this.field.createBoard(_this).then(function () {
+          _this.pointsToWin = Math.floor(_this.field.numberOfFlags / 2) + 1;
+          _this.emit('new-game', edge);
+          _this._changeTurn();
+          return _this;
+        }).then(resolve)['catch'](reject);
+      });
     }
 
     /**
@@ -74,21 +87,26 @@ var Game = (function (_EventEmitter) {
      */
   }, {
     key: 'addPlayer',
-    value: function addPlayer() {
-      var player = arguments.length <= 0 || arguments[0] === undefined ? (0, _util.requiredParam)('player') : arguments[0];
+    value: function addPlayer(player) {
+      var _this2 = this;
 
-      if (this.isFull) {
-        throw new Error('The game is full.');
-      }
-      if (!player || typeof player !== 'object') {
-        throw new Error('Invalid player.');
-      }
-      if (!player.id) {
-        throw new Error('The provided player must have an "id" attribute');
-      }
-      player.__points = 0;
-      this.players.push(player);
-      return player;
+      return new _bluebird2['default'](function (resolve, reject) {
+        if (_lodash2['default'].isUndefined(player)) {
+          (0, _util.requiredParam)('player');
+        }
+        if (_this2.isFull) {
+          reject(new Error('The game is full.'));
+        }
+        if (!player || typeof player !== 'object') {
+          reject(new Error('Invalid player.'));
+        }
+        if (!player.id) {
+          reject(new Error('The provided player must have an "id" attribute'));
+        }
+        player.__points = 0;
+        _this2.players.push(player);
+        resolve(player);
+      });
     }
 
     /**
@@ -100,29 +118,38 @@ var Game = (function (_EventEmitter) {
      */
   }, {
     key: 'hitPosition',
-    value: function hitPosition() {
-      var player = arguments.length <= 0 || arguments[0] === undefined ? (0, _util.requiredParam)('player') : arguments[0];
-      var x = arguments.length <= 1 || arguments[1] === undefined ? (0, _util.requiredParam)('x') : arguments[1];
-      var y = arguments.length <= 2 || arguments[2] === undefined ? (0, _util.requiredParam)('y') : arguments[2];
+    value: function hitPosition(player, x, y) {
+      var _this3 = this;
 
-      if (! ~this.players.indexOf(player)) {
-        throw new Error('The provided player is not in the game.');
-      }
-      if (this.over) {
-        throw new Error('The game is over.');
-      }
-      if (this.currentPlayer !== player) {
-        throw new Error('It is not your turn yet.');
-      }
+      return new _bluebird2['default'](function (resolve, reject) {
+        if (_lodash2['default'].isUndefined(player)) {
+          (0, _util.requiredParam)('player');
+        }
+        if (_lodash2['default'].isUndefined(x)) {
+          (0, _util.requiredParam)('x');
+        }
+        if (_lodash2['default'].isUndefined(y)) {
+          (0, _util.requiredParam)('y');
+        }
+        if (! ~_this3.players.indexOf(player)) {
+          reject(new Error('The provided player is not in the game.'));
+        }
+        if (_this3.over) {
+          reject(new Error('The game is over.'));
+        }
+        if (_this3.currentPlayer !== player) {
+          reject(new Error('It is not your turn yet.'));
+        }
 
-      var positionHit = this.field.hitPosition(x, y);
-      if (positionHit.hasFlag) {
-        this._increasePlayerPoints(player);
-      } else {
-        this._changeTurn();
-      }
-
-      return positionHit.hasFlag;
+        _this3.field.hitPosition(x, y).then(function (positionHit) {
+          if (positionHit.hasFlag) {
+            _this3._increasePlayerPoints(player);
+          } else {
+            _this3._changeTurn();
+          }
+          return positionHit.hasFlag;
+        }).then(resolve)['catch'](reject);
+      });
     }
 
     /**

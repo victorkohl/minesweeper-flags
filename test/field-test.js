@@ -1,5 +1,7 @@
+import Promise from 'bluebird';
 import should from 'should';
 import sinon from 'sinon';
+import promised from 'should-promised'; // eslint-disable-line no-unused-vars
 import Position from '../lib/position';
 import Field from '../lib/field';
 import Game from '../lib/game';
@@ -79,6 +81,11 @@ describe('Field', () => {
 
       beforeEach(() => field.createBoard(new Game()));
 
+      it('should return a Promise', (done) => {
+        field.createBoard(new Game()).should.be.a.Promise(); // eslint-disable-line new-cap
+        done();
+      });
+
       it('creates an array with correct edge size', (done) => {
         field.positions.length.should.equal(field.edge);
         done();
@@ -135,51 +142,86 @@ describe('Field', () => {
 
       let position;
       beforeEach(() => {
-        field.createBoard(new Game());
-        position = field.positions[2][1];
+        return field.createBoard(new Game())
+          .then(() => position = field.positions[2][1]);
+      });
+
+      it('should return a Promise', (done) => {
+        field.hitPosition(0, 0).should.be.a.Promise(); // eslint-disable-line new-cap
+        done();
       });
 
       it('requires an X coordinate', (done) => {
-        (() => field.hitPosition()).should.throw('Missing parameter: x');
-        done();
+        field.hitPosition()
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal('Missing parameter: x');
+            done();
+          });
       });
 
       it('requires a Y coordinate', (done) => {
-        (() => field.hitPosition(1)).should.throw('Missing parameter: y');
-        done();
+        field.hitPosition(0)
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal('Missing parameter: y');
+            done();
+          });
       });
 
       it('requires an X coordinate inside the field', (done) => {
-        (() => field.hitPosition(11, 0)).should.throw('Invalid coordinates: x=11; y=0.');
-        done();
+        field.hitPosition(11, 0)
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal('Invalid coordinates: x=11; y=0.');
+            done();
+          });
       });
 
       it('requires a Y coordinate inside the field', (done) => {
-        (() => field.hitPosition(0, 11)).should.throw('Invalid coordinates: x=0; y=11.');
-        done();
+        field.hitPosition(0, 11)
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal('Invalid coordinates: x=0; y=11.');
+            done();
+          });
       });
 
       it('requires an integer X coordinate', (done) => {
-        (() => field.hitPosition('x', 0)).should.throw('Invalid coordinates: x=x; y=0.');
-        done();
+        field.hitPosition('x', 0)
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal('Invalid coordinates: x=x; y=0.');
+            done();
+          });
       });
 
       it('requires an integer Y coordinate', (done) => {
-        (() => field.hitPosition(0, 'y')).should.throw('Invalid coordinates: x=0; y=y.');
-        done();
+        field.hitPosition(0, 'y')
+          .then(() => should.fail('No error was thrown.'))
+          .catch((err) => {
+            err.message.should.equal('Invalid coordinates: x=0; y=y.');
+            done();
+          });
       });
 
       it('calls Position#hit', (done) => {
         sinon.spy(position, 'hit');
-        field.hitPosition(1, 2);
-        position.hit.called.should.be.true();
-        done();
+        field.hitPosition(1, 2)
+          .then(() => {
+            position.hit.called.should.be.true();
+            done();
+          })
+          .catch(done);
       });
 
       it('returns whatever Position#hit returns', (done) => {
-        sinon.stub(position, 'hit').returns('abc');
-        field.hitPosition(1, 2).should.be.equal('abc');
-        done();
+        sinon.stub(position, 'hit').returns(Promise.resolve('abc'));
+        field.hitPosition(1, 2)
+          .then((res) => {
+            res.should.be.equal('abc');
+            done();
+          });
       });
 
     });
