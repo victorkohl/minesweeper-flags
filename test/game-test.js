@@ -273,7 +273,7 @@ describe('Game', () => {
           .catch(done);
       });
 
-      describe('when a flag is hit', () => {
+      describe('when a flag is found', () => {
 
         beforeEach(() => {
           let positionWithFlag = new Position(game, 0, 0, true);
@@ -314,6 +314,15 @@ describe('Game', () => {
             .catch(done);
         });
 
+        it('emits the "points-changed" event', (done) => {
+          game.hitPosition(player1, 0, 0)
+            .then(() => {
+              game.emit.calledWith('points-changed', player1.id, player1.points).should.be.true();
+              done();
+            })
+            .catch(done);
+        });
+
         it('emits the "game-over" event', (done) => {
           player1.__points = game.pointsToWin;
           game.hitPosition(player1, 0, 0)
@@ -326,7 +335,7 @@ describe('Game', () => {
 
       });
 
-      describe('when a flag is not hit', () => {
+      describe('when a flag is not found', () => {
 
         beforeEach(() => {
           let positionWithoutFlag = new Position(game, 0, 0, false);

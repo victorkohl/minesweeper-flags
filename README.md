@@ -23,7 +23,10 @@ game.on('position-hit', (x, y, flagHit, flagsNearby) => {
     console.log(`Position Hit (${x},${y}) flagHit=${flagHit}; flagsNearby=${flagsNearby}`)
 });
 game.on('turn-changed', (playerId) => {
-    console.log(`Turn Changed (${playerId})`)
+    console.log(`Turn Changed (id=${playerId})`)
+});
+game.on('points-changed', (playerId, points) => {
+    console.log(`Points Changed (id=${playerId}, points=${points})`)
 });
 game.on('game-over', () => {
     console.log(`Game Over`)
@@ -55,12 +58,13 @@ game.addPlayer(player1)
 
 The following events are emitted by **MinesweeperFlags**:
 
-| Event        | Arguments                  | Description                            |
-| ------------ | -------------------------- | -------------------------------------- |
-| new-game     | edge                       | Emitted when a new game starts.        |
-| position-hit | x, y, flagHit, flagsNearby | Emitted when a position is hit.        |
-| turn-changed | playerId                   | Emitted when the turn is changed.      |
-| game-over    |                            | Emitted when the game is over.         |
+| Event          | Arguments                  | Description                            |
+| -------------- | -------------------------- | -------------------------------------- |
+| new-game       | edge                       | Emitted when a new game starts.        |
+| position-hit   | x, y, flagHit, flagsNearby | Emitted when a position is hit.        |
+| points-changed | playerId                   | Emitted when a player's points change. |
+| turn-changed   | playerId, points           | Emitted when the turn is changed.      |
+| game-over      |                            | Emitted when the game is over.         |
 
 ## Testing
 
