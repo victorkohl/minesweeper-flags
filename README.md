@@ -62,8 +62,8 @@ The following events are emitted by **MinesweeperFlags**:
 | -------------- | -------------------------- | -------------------------------------- |
 | new-game       | edge                       | Emitted when a new game starts.        |
 | position-hit   | x, y, flagHit, flagsNearby | Emitted when a position is hit.        |
-| points-changed | playerId                   | Emitted when a player's points change. |
-| turn-changed   | playerId, points           | Emitted when the turn is changed.      |
+| points-changed | playerId, points           | Emitted when a player's points change. |
+| turn-changed   | playerId                   | Emitted when the turn is changed.      |
 | game-over      |                            | Emitted when the game is over.         |
 
 ## Testing
