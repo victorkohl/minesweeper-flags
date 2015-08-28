@@ -102,7 +102,7 @@ var Field = (function () {
           (0, _util.requiredParam)('y');
         }
         if (_this2._invalidCoordinates(x, y)) {
-          reject(new Error('Invalid coordinates: x=' + x + '; y=' + y + '.'));
+          throw new Error('Invalid coordinates: x=' + x + '; y=' + y + '.');
         }
         _this2.positions[y][x].hit().then(resolve)['catch'](reject);
       });

@@ -61,7 +61,7 @@ var Position = (function () {
     value: function setNeighbour(neighbour, position) {
       var _this = this;
 
-      return new _bluebird2['default'](function (resolve, reject) {
+      return new _bluebird2['default'](function (resolve) {
         if (_lodash2['default'].isUndefined(neighbour)) {
           (0, _util.requiredParam)('neighbour');
         }
@@ -69,10 +69,10 @@ var Position = (function () {
           (0, _util.requiredParam)('position');
         }
         if (!_this.neighbours.has(neighbour)) {
-          reject(new Error('The provided neighbour \'' + neighbour + '\' is invalid.'));
+          throw new Error('The provided neighbour \'' + neighbour + '\' is invalid.');
         }
         if (!(position instanceof Position) && position !== null) {
-          reject(new Error('The provided position is invalid.'));
+          throw new Error('The provided position is invalid.');
         }
         _this.neighbours.set(neighbour, position);
         _this._setFlagsNearby().then(resolve);

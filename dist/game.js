@@ -67,7 +67,7 @@ var Game = (function (_EventEmitter) {
 
       return new _bluebird2['default'](function (resolve, reject) {
         if (!_this.isFull) {
-          reject(new Error('The game must be full before you can start it.'));
+          throw new Error('The game must be full before you can start it.');
         }
         _this.field = new _field2['default'](edge);
         _this.field.createBoard(_this).then(function () {
@@ -90,18 +90,18 @@ var Game = (function (_EventEmitter) {
     value: function addPlayer(player) {
       var _this2 = this;
 
-      return new _bluebird2['default'](function (resolve, reject) {
+      return new _bluebird2['default'](function (resolve) {
         if (_lodash2['default'].isUndefined(player)) {
           (0, _util.requiredParam)('player');
         }
         if (_this2.isFull) {
-          reject(new Error('The game is full.'));
+          throw new Error('The game is full.');
         }
         if (!player || typeof player !== 'object') {
-          reject(new Error('Invalid player.'));
+          throw new Error('Invalid player.');
         }
         if (!player.id) {
-          reject(new Error('The provided player must have an "id" attribute'));
+          throw new Error('The provided player must have an "id" attribute');
         }
         player.__points = 0;
         _this2.players.push(player);
@@ -132,13 +132,13 @@ var Game = (function (_EventEmitter) {
           (0, _util.requiredParam)('y');
         }
         if (! ~_this3.players.indexOf(player)) {
-          reject(new Error('The provided player is not in the game.'));
+          throw new Error('The provided player is not in the game.');
         }
         if (_this3.over) {
-          reject(new Error('The game is over.'));
+          throw new Error('The game is over.');
         }
         if (_this3.currentPlayer !== player) {
-          reject(new Error('It is not your turn yet.'));
+          throw new Error('It is not your turn yet.');
         }
 
         _this3.field.hitPosition(x, y).then(function (positionHit) {
