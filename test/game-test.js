@@ -73,7 +73,8 @@ describe('Game', () => {
           .catch((err) => {
             err.message.should.equal('The game must be full before you can start it.');
             done();
-          });
+          })
+          .catch(done);
       });
 
       it('creates a new Field', (done) => {
@@ -111,7 +112,8 @@ describe('Game', () => {
           .catch((err) => {
             err.message.should.equal('Missing parameter: player');
             done();
-          });
+          })
+          .catch(done);
       });
 
       it('doesn\'t allow more than two players', (done) => {
@@ -122,7 +124,8 @@ describe('Game', () => {
           .catch((err) => {
             err.message.should.equal('The game is full.');
             done();
-          });
+          })
+          .catch(done);
       });
 
       it('requires an object', (done) => {
@@ -131,7 +134,8 @@ describe('Game', () => {
           .catch((err) => {
             err.message.should.equal('Invalid player.');
             done();
-          });
+          })
+          .catch(done);
       });
 
       it('requires an object with an "id" attribute', (done) => {
@@ -140,7 +144,8 @@ describe('Game', () => {
           .catch((err) => {
             err.message.should.equal('The provided player must have an "id" attribute');
             done();
-          });
+          })
+          .catch(done);
       });
 
       it('creates a "__points" attribute', (done) => {
@@ -193,7 +198,8 @@ describe('Game', () => {
           .catch((err) => {
             err.message.should.equal('Missing parameter: player');
             done();
-          });
+          })
+          .catch(done);
       });
 
       it('requires an X coordinate', (done) => {
@@ -202,7 +208,8 @@ describe('Game', () => {
           .catch((err) => {
             err.message.should.equal('Missing parameter: x');
             done();
-          });
+          })
+          .catch(done);
       });
 
       it('requires a Y coordinate', (done) => {
@@ -211,7 +218,8 @@ describe('Game', () => {
           .catch((err) => {
             err.message.should.equal('Missing parameter: y');
             done();
-          });
+          })
+          .catch(done);
       });
 
       it('requires a valid player', (done) => {
@@ -220,7 +228,8 @@ describe('Game', () => {
           .catch((err) => {
             err.message.should.equal('The provided player is not in the game.');
             done();
-          });
+          })
+          .catch(done);
       });
 
       it('throws when it\'s not the player\'s turn', (done) => {
@@ -229,7 +238,18 @@ describe('Game', () => {
           .catch((err) => {
             err.message.should.equal(`It is not your turn yet.`);
             done();
-          });
+          })
+          .catch(done);
+      });
+
+      it('does not hit the position when it\'s not the player\'s turn', (done) => {
+        game.hitPosition(player2, 0, 0)
+          .then(() => should.fail('No error was thrown.'))
+          .catch(() => {
+            game.field.positions[0][0].isHit.should.be.false();
+            done();
+          })
+          .catch(done);
       });
 
       it('throws when the game is over', (done) => {
@@ -239,7 +259,8 @@ describe('Game', () => {
           .catch((err) => {
             err.message.should.equal('The game is over.');
             done();
-          });
+          })
+          .catch(done);
       });
 
       it('calls Field#hitPosition', (done) => {
