@@ -165,7 +165,7 @@ var Game = (function (_EventEmitter) {
     key: '_increasePlayerPoints',
     value: function _increasePlayerPoints(player) {
       player.__points++;
-      this.emit('points-changed', this.currentPlayer.id, this.currentPlayer.points);
+      this.emit('points-changed', this.currentPlayer.id, this.currentPlayer.__points);
       if (player.__points >= this.pointsToWin) {
         this.over = true;
         this.emit('game-over');

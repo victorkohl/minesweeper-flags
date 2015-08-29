@@ -317,7 +317,7 @@ describe('Game', () => {
         it('emits the "points-changed" event', (done) => {
           game.hitPosition(player1, 0, 0)
             .then(() => {
-              game.emit.calledWith('points-changed', player1.id, player1.points).should.be.true();
+              game.emit.calledWith('points-changed', player1.id, player1.__points).should.be.true();
               done();
             })
             .catch(done);
