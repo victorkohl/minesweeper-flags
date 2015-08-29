@@ -12,24 +12,26 @@ npm install victorkohl/minesweeper-flags
 ```javascript
 import MinesweeperFlags from 'minesweeper-flags';
 
+let GameError = MinesweeperFlags.GameError;
+
 // creates a new Flags game
 let game = new MinesweeperFlags();
 
 // setup the event handlers
 game.on('new-game', (edge) => {
-    console.log(`New Game (${edge}x${edge})`)
+  console.log(`New Game (${edge}x${edge})`)
 });
 game.on('position-hit', (x, y, flagHit, flagsNearby) => {
-    console.log(`Position Hit (${x},${y}) flagHit=${flagHit}; flagsNearby=${flagsNearby}`)
+  console.log(`Position Hit (${x},${y}) flagHit=${flagHit}; flagsNearby=${flagsNearby}`)
 });
 game.on('turn-changed', (playerId) => {
-    console.log(`Turn Changed (id=${playerId})`)
+  console.log(`Turn Changed (id=${playerId})`)
 });
 game.on('points-changed', (playerId, points) => {
-    console.log(`Points Changed (id=${playerId}, points=${points})`)
+  console.log(`Points Changed (id=${playerId}, points=${points})`)
 });
 game.on('game-over', () => {
-    console.log(`Game Over`)
+  console.log(`Game Over`)
 });
 
 // create player objects (it can be any object with an ID attribute)
@@ -38,13 +40,19 @@ let player2 = { id: 2 };
 
 // add players to the game
 game.addPlayer(player1)
-    .then(() => game.addPlayer(player2))
+  .then(() => game.addPlayer(player2))
 
 // start the game with a 10x10 board
-    .then(() => game.start(10))
+  .then(() => game.start(10))
 
 // hits the position 0, 0
-    .then(() => game.hitPosition(player1, 0, 0));
+  .then(() => game.hitPosition(player1, 0, 0))
+
+// catch errors that can be sent to the client
+  .catch(GameError, console.log)
+
+// catch all other errors
+  .catch(console.err);
 
 
 // A possible output:

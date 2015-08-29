@@ -16,6 +16,10 @@ var _game = require('./game');
 
 var _game2 = _interopRequireDefault(_game);
 
+var _error = require('./error');
+
+var _error2 = _interopRequireDefault(_error);
+
 var MinesweeperFlags = (function (_Game) {
   _inherits(MinesweeperFlags, _Game);
 
@@ -33,6 +37,8 @@ var MinesweeperFlags = (function (_Game) {
 
   return MinesweeperFlags;
 })(_game2['default']);
+
+MinesweeperFlags.GameError = _error2['default'];
 
 exports['default'] = MinesweeperFlags;
 module.exports = exports['default'];
