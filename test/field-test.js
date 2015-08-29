@@ -157,7 +157,8 @@ describe('Field', () => {
           .catch((err) => {
             err.message.should.equal('Missing parameter: x');
             done();
-          });
+          })
+          .catch(done);
       });
 
       it('requires a Y coordinate', (done) => {
@@ -166,7 +167,8 @@ describe('Field', () => {
           .catch((err) => {
             err.message.should.equal('Missing parameter: y');
             done();
-          });
+          })
+          .catch(done);
       });
 
       it('requires an X coordinate inside the field', (done) => {
@@ -175,7 +177,8 @@ describe('Field', () => {
           .catch((err) => {
             err.message.should.equal('Invalid coordinates: x=11; y=0.');
             done();
-          });
+          })
+          .catch(done);
       });
 
       it('requires a Y coordinate inside the field', (done) => {
@@ -184,7 +187,8 @@ describe('Field', () => {
           .catch((err) => {
             err.message.should.equal('Invalid coordinates: x=0; y=11.');
             done();
-          });
+          })
+          .catch(done);
       });
 
       it('requires an integer X coordinate', (done) => {
@@ -193,7 +197,8 @@ describe('Field', () => {
           .catch((err) => {
             err.message.should.equal('Invalid coordinates: x=x; y=0.');
             done();
-          });
+          })
+          .catch(done);
       });
 
       it('requires an integer Y coordinate', (done) => {
@@ -202,7 +207,8 @@ describe('Field', () => {
           .catch((err) => {
             err.message.should.equal('Invalid coordinates: x=0; y=y.');
             done();
-          });
+          })
+          .catch(done);
       });
 
       it('calls Position#hit', (done) => {

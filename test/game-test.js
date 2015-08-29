@@ -226,7 +226,7 @@ describe('Game', () => {
         game.hitPosition('p1', 0, 0)
           .then(() => should.fail('No error was thrown.'))
           .catch((err) => {
-            err.message.should.equal('The provided player is not in the game.');
+            err.message.should.equal('You are not in the game.');
             done();
           })
           .catch(done);

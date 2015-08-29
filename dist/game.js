@@ -26,6 +26,10 @@ var _events = require('events');
 
 var _util = require('./util');
 
+var _error = require('./error');
+
+var _error2 = _interopRequireDefault(_error);
+
 var _field = require('./field');
 
 var _field2 = _interopRequireDefault(_field);
@@ -132,13 +136,13 @@ var Game = (function (_EventEmitter) {
           (0, _util.requiredParam)('y');
         }
         if (! ~_this3.players.indexOf(player)) {
-          throw new Error('The provided player is not in the game.');
+          throw new _error2['default']('You are not in the game.');
         }
         if (_this3.over) {
-          throw new Error('The game is over.');
+          throw new _error2['default']('The game is over.');
         }
         if (_this3.currentPlayer !== player) {
-          throw new Error('It is not your turn yet.');
+          throw new _error2['default']('It is not your turn yet.');
         }
 
         _this3.field.hitPosition(x, y).then(function (positionHit) {
