@@ -2,11 +2,11 @@
   "name": "minesweeper-flags",
   "version": "0.5.2",
   "description": "A minesweeper flags game.",
-  "homepage": "http://flags.victorkohl.me",
+  "homepage": "https://github.com/victorkohl/minesweeper-flags",
   "repository": "victorkohl/minesweeper-flags",
   "author": {
     "name": "Victor Kohl Tavares",
-    "url": "http://victorkohl.me"
+    "url": "http://victorkohl.com"
   },
   "files": [
     "dist"
