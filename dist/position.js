@@ -1,14 +1,10 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', {
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _createClass = (function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ('value' in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; })();
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { 'default': obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError('Cannot call a class as a function'); } }
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _bluebird = require('bluebird');
 
@@ -20,9 +16,13 @@ var _lodash2 = _interopRequireDefault(_lodash);
 
 var _util = require('./util');
 
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 var NEIGHBOURHOOD = [['nw'], ['n'], ['ne'], ['e'], ['se'], ['s'], ['sw'], ['w']];
 
-var Position = (function () {
+var Position = function () {
   /**
    * Represents a position.
    * @constructor
@@ -31,12 +31,11 @@ var Position = (function () {
    * @param {integer} y - The y coodinate.
    * @param {boolean} [hasFlag=false] - Indicates whether or not this position has a flag.
    */
-
   function Position() {
-    var game = arguments.length <= 0 || arguments[0] === undefined ? (0, _util.requiredParam)('game') : arguments[0];
-    var x = arguments.length <= 1 || arguments[1] === undefined ? (0, _util.requiredParam)('x') : arguments[1];
-    var y = arguments.length <= 2 || arguments[2] === undefined ? (0, _util.requiredParam)('y') : arguments[2];
-    var hasFlag = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+    var game = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : (0, _util.requiredParam)('game');
+    var x = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : (0, _util.requiredParam)('x');
+    var y = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : (0, _util.requiredParam)('y');
+    var hasFlag = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
     _classCallCheck(this, Position);
 
@@ -56,16 +55,17 @@ var Position = (function () {
    * @returns {Promise} A bluebird promise object
    */
 
+
   _createClass(Position, [{
     key: 'setNeighbour',
     value: function setNeighbour(neighbour, position) {
       var _this = this;
 
-      return new _bluebird2['default'](function (resolve) {
-        if (_lodash2['default'].isUndefined(neighbour)) {
+      return new _bluebird2.default(function (resolve) {
+        if (_lodash2.default.isUndefined(neighbour)) {
           (0, _util.requiredParam)('neighbour');
         }
-        if (_lodash2['default'].isUndefined(position)) {
+        if (_lodash2.default.isUndefined(position)) {
           (0, _util.requiredParam)('position');
         }
         if (!_this.neighbours.has(neighbour)) {
@@ -84,12 +84,13 @@ var Position = (function () {
      * @returns {Position} This position.
      * @returns {Promise} A bluebird promise object
      */
+
   }, {
     key: 'hit',
     value: function hit() {
       var _this2 = this;
 
-      return new _bluebird2['default'](function (resolve, reject) {
+      return new _bluebird2.default(function (resolve, reject) {
         if (_this2.isHit) {
           return resolve(_this2);
         }
@@ -107,9 +108,9 @@ var Position = (function () {
           });
         }
 
-        _bluebird2['default'].all(neighboursHit).then(function () {
+        _bluebird2.default.all(neighboursHit).then(function () {
           return resolve(_this2);
-        })['catch'](reject);
+        }).catch(reject);
       });
     }
 
@@ -118,12 +119,13 @@ var Position = (function () {
      * @private
      * @returns {Promise} A bluebird promise object
      */
+
   }, {
     key: '_setFlagsNearby',
     value: function _setFlagsNearby() {
       var _this3 = this;
 
-      return new _bluebird2['default'](function (resolve) {
+      return new _bluebird2.default(function (resolve) {
         var count = 0;
         var _iteratorNormalCompletion = true;
         var _didIteratorError = false;
@@ -142,8 +144,8 @@ var Position = (function () {
           _iteratorError = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion && _iterator['return']) {
-              _iterator['return']();
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
             }
           } finally {
             if (_didIteratorError) {
@@ -159,11 +161,10 @@ var Position = (function () {
   }]);
 
   return Position;
-})();
+}();
 
 Position.neighbourhood = NEIGHBOURHOOD.map(function (n) {
   return n[0];
 });
 
-exports['default'] = Position;
-module.exports = exports['default'];
+exports.default = Position;

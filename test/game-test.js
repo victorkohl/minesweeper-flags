@@ -1,7 +1,6 @@
 import Promise from 'bluebird';
 import should from 'should';
 import sinon from 'sinon';
-import promised from 'should-promised'; // eslint-disable-line no-unused-vars
 import Game from '../lib/game';
 import Position from '../lib/position';
 
@@ -236,7 +235,7 @@ describe('Game', () => {
         game.hitPosition(player2, 0, 0)
           .then(() => should.fail('No error was thrown.'))
           .catch((err) => {
-            err.message.should.equal(`It is not your turn yet.`);
+            err.message.should.equal('It is not your turn yet.');
             done();
           })
           .catch(done);

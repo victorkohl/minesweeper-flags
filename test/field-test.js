@@ -1,7 +1,6 @@
 import Promise from 'bluebird';
 import should from 'should';
 import sinon from 'sinon';
-import promised from 'should-promised'; // eslint-disable-line no-unused-vars
 import Position from '../lib/position';
 import Field from '../lib/field';
 import Game from '../lib/game';

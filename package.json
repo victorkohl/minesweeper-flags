@@ -1,12 +1,12 @@
 {
   "name": "minesweeper-flags",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "description": "A minesweeper flags game.",
-  "homepage": "http://flags.victorkohl.me",
+  "homepage": "https://github.com/victorkohl/minesweeper-flags",
   "repository": "victorkohl/minesweeper-flags",
   "author": {
     "name": "Victor Kohl Tavares",
-    "url": "http://victorkohl.me"
+    "url": "http://victorkohl.com"
   },
   "files": [
     "dist"
@@ -18,21 +18,17 @@
     "game"
   ],
   "devDependencies": {
-    "babel-core": "~5.8.0",
+    "babel-core": "^6.24.1",
+    "babel-preset-es2015": "^6.24.1",
     "gulp": "~3.9.0",
-    "gulp-babel": "~5.2.0",
-    "gulp-eslint": "~1.0.0",
-    "gulp-exclude-gitignore": "~1.0.0",
-    "gulp-istanbul": "~0.10.0",
-    "gulp-jscs": "~2.0.0",
-    "gulp-mocha": "~2.1.3",
-    "gulp-nsp": "~0.4.5",
-    "gulp-plumber": "~1.0.0",
-    "jshint-stylish": "~2.0.1",
-    "should": "~7.0.2",
-    "should-promised": "^0.3.1",
-    "should-sinon": "0.0.3",
-    "sinon": "~1.15.4"
+    "gulp-babel": "^6.1.2",
+    "gulp-eslint": "^3.0.1",
+    "gulp-exclude-gitignore": "^1.1.1",
+    "gulp-mocha": "^4.3.1",
+    "jshint-stylish": "^2.2.1",
+    "should": "^11.2.1",
+    "should-sinon": "^0.0.5",
+    "sinon": "^2.2.0"
   },
   "scripts": {
     "prepublish": "gulp prepublish",
@@ -44,7 +40,7 @@
   },
   "license": "MIT",
   "dependencies": {
-    "bluebird": "^2.9.34",
-    "lodash": "~3.10.0"
+    "bluebird": "^3.5.0",
+    "lodash": "^4.17.4"
   }
 }
