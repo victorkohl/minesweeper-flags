@@ -16,7 +16,10 @@ gulp.task('test', function (cb) {
   var mochaErr;
 
   gulp.src('test/**/*.js')
-    .pipe(mocha({reporter: 'dot', compilers: 'js:babel-core/register'}))
+    .pipe(mocha({
+      reporter: 'dot',
+      compilers: 'js:babel-core/register,babel-polyfill'
+    }))
     .on('error', function (err) {
       mochaErr = err;
     })
@@ -25,11 +28,11 @@ gulp.task('test', function (cb) {
     });
 });
 
-gulp.task('babel', function () {
+gulp.task('build', function () {
   return gulp.src('lib/**/*.js')
     .pipe(babel())
     .pipe(gulp.dest('dist'));
 });
 
-gulp.task('prepublish', ['babel']);
+gulp.task('prepublish', ['build']);
 gulp.task('default', ['static', 'test']);
