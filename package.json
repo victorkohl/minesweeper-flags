@@ -1,6 +1,6 @@
 {
   "name": "minesweeper-flags",
-  "version": "0.5.3",
+  "version": "0.5.4",
   "description": "A minesweeper flags game.",
   "homepage": "https://github.com/victorkohl/minesweeper-flags",
   "repository": "victorkohl/minesweeper-flags",
@@ -38,7 +38,7 @@
     "test": "gulp",
     "build": "gulp prepublish",
     "preversion": "npm test",
-    "version": "npm run build && git add -A ../dist",
+    "version": "npm run build && git add -A ./dist",
     "postversion": "git push && git push --tags"
   },
   "license": "MIT",
