@@ -7,11 +7,13 @@ exports.requiredParam = requiredParam;
 /**
  * Gets called if a required parameter is missing and the expression
  * specifying the default value is evaluated.
+ * @param {string} parameter name
+ * @throws {Error}
  */
 function requiredParam(parameter) {
-  var message = 'Missing parameter';
+  let message = 'Missing parameter';
   if (parameter) {
-    message += ': ' + parameter;
+    message += `: ${parameter}`;
   }
   throw new Error(message);
 }
